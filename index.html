@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yanko</title>
+  <style>
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    body {
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-weight: 400;
+      color: #666;
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    .search-box {
+      margin-bottom: 25px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0077ff;
+    }
+
+    table {
+      width: 100%;
+      max-width: 600px;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background-color: #0077ff;
+      color: white;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 18px;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #f5faff;
+    }
+
+    tbody tr:hover {
+      background-color: #e9f3ff;
+    }
+
+    a {
+      color: #0077ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Yanko</h1>
+  <h2>A Directory from the Future</h2>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search projects...">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Project Name</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody id="projectTable">
+      <tr>
+        <td>Portfolio Site</td>
+        <td><a href="https://example.com" target="_blank">Visit</a></td>
+      </tr>
+      <tr>
+        <td>Weather App</td>
+        <td><a href="https://example.com" target="_blank">Visit</a></td>
+      </tr>
+      <tr>
+        <td>Blog Platform</td>
+        <td><a href="https://example.com" target="_blank">Visit</a></td>
+      </tr>
+      <tr>
+        <td>Chat App</td>
+        <td><a href="https://example.com" target="_blank">Visit</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#projectTable tr');
+
+    searchInput.addEventListener('keyup', () => {
+      const filter = searchInput.value.toLowerCase();
+      tableRows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>
