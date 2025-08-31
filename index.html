@@ -121,38 +121,34 @@
 
     /* Hover Preview Box */
     .preview-box {
-      position: fixed;
-      top: 50%;
-      right: 20px;
-      transform: translateY(-50%);
-      width: 250px;
-      padding: 15px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
+    position: absolute;
+    width: 250px;
+    padding: 15px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, top 0.3s ease;
     }
 
     .preview-box img {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-bottom: 10px;
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
     }
 
     .preview-box p {
-      font-size: 1rem;
-      color: #004aad;
-      font-weight: bold;
+    font-size: 1rem;
+    color: #004aad;
+    font-weight: bold;
     }
 
     .preview-box.show {
-      opacity: 1;
-      pointer-events: auto;
+    opacity: 1;
+    pointer-events: auto;
     }
-
     /* Footer */
     footer {
       font-size: 0.9rem;
@@ -182,21 +178,21 @@
         </tr>
       </thead>
       <tbody id="projectTable">
-        <tr data-img="https://via.placeholder.com/250x150?text=Portfolio" data-title="My Portfolio Preview">
-          <td>Portfolio Site</td>
-          <td><a href="https://example.com" target="_blank">Visit</a></td>
+        <tr data-img="https://www.bpmcdn.com/f/files/yukon/import/2017-06/dempster-highway.jpg;w=650" data-title="Dempster-Shafer Fire Prediction">
+          <td>Dempster-Shafer Fire Prediction</td>
+          <td><a href="https://www.sciencedirect.com/science/article/abs/pii/S0048969717324476" target="_blank">Visit</a></td>
         </tr>
-        <tr data-img="https://via.placeholder.com/250x150?text=Weather+App" data-title="Weather Forecast Tool">
-          <td>Weather App</td>
-          <td><a href="https://example.com" target="_blank">Visit</a></td>
+        <tr data-img="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Ferrofluid_Magnet_under_glass_edit.jpg/500px-Ferrofluid_Magnet_under_glass_edit.jpg" data-title="Permanent Fluidic Magnets">
+          <td>Permanent Fluidic Magnets</td>
+          <td><a href="https://www.nature.com/articles/s41563-024-01802-6" target="_blank">Visit</a></td>
         </tr>
-        <tr data-img="https://via.placeholder.com/250x150?text=Blog" data-title="Modern Blogging Experience">
-          <td>Blog Platform</td>
-          <td><a href="https://example.com" target="_blank">Visit</a></td>
+        <tr data-img="https://cdnintech.com/books/474/1713431939-751764553/cover.jpg" data-title="Ceramic Thermal-Shock Resistance">
+          <td>Ceramic Thermal-Shock Resistance</td>
+          <td><a href="https://www.sciencedirect.com/science/article/abs/pii/S095522192400829X" target="_blank">Visit</a></td>
         </tr>
-        <tr data-img="https://via.placeholder.com/250x150?text=Chat+App" data-title="Instant Messaging Demo">
-          <td>Chat App</td>
-          <td><a href="https://example.com" target="_blank">Visit</a></td>
+        <tr data-img="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Argyrodite-170093.jpg/250px-Argyrodite-170093.jpg" data-title="Boosting Conductivity in Electrolytes">
+          <td>Boosting Conductivity in Electrolytes</td>
+          <td><a href="https://advanced.onlinelibrary.wiley.com/doi/abs/10.1002/adfm.202420971" target="_blank">Visit</a></td>
         </tr>
       </tbody>
     </table>
@@ -232,18 +228,31 @@
     let hoverTimer;
 
     tableRows.forEach(row => {
-      row.addEventListener('mouseenter', () => {
+    row.addEventListener('mouseenter', (event) => {
         hoverTimer = setTimeout(() => {
-          previewImg.src = row.dataset.img;
-          previewTitle.textContent = row.dataset.title;
-          previewBox.classList.add('show');
-        }, 300);
-      });
+        const rect = row.getBoundingClientRect(); // Get row position
+        const tableRect = row.closest('table').getBoundingClientRect(); // Get table position
 
-      row.addEventListener('mouseleave', () => {
+        previewImg.src = row.dataset.img;
+        previewTitle.textContent = row.dataset.title;
+
+        // Calculate position:
+        // Right edge of table + 20px
+        const left = tableRect.right + 20;
+        // Centered relative to hovered row
+        const top = rect.top + (rect.height / 2) - (previewBox.offsetHeight / 2);
+
+        previewBox.style.left = `${left}px`;
+        previewBox.style.top = `${top}px`;
+
+        previewBox.classList.add('show');
+        }, 300);
+    });
+
+    row.addEventListener('mouseleave', () => {
         clearTimeout(hoverTimer);
         previewBox.classList.remove('show');
-      });
+    });
     });
   </script>
 
