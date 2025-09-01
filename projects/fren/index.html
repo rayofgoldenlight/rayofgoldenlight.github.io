@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Response Chat</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f1f1f1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    .message {
+        max-width: 60%;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 16px;
+        word-wrap: break-word;
+    }
+
+    .user {
+        background: #007bff;
+        color: white;
+        align-self: flex-end;
+    }
+
+    .bot {
+        background: #e0e0e0;
+        color: black;
+        align-self: flex-start;
+    }
+
+    .input-container {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #ccc;
+    }
+
+    input {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+    }
+
+    button {
+        padding: 10px 15px;
+        margin-left: 10px;
+        font-size: 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+</style>
+</head>
+<body>
+
+<div class="chat-container" id="chatContainer"></div>
+
+<div class="input-container">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    const chatContainer = document.getElementById("chatContainer");
+    const userInput = document.getElementById("userInput");
+
+    function sendMessage() {
+        const text = userInput.value.trim();
+        if (text === "") return;
+
+        // Create user message
+        addMessage(text, "user");
+
+        // Generate bot response
+        const randomResponse = generateRandomString(text.length);
+        setTimeout(() => addMessage(randomResponse, "bot"), 500);
+
+        userInput.value = "";
+    }
+
+    function addMessage(message, type) {
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("message", type);
+        msgDiv.textContent = message;
+        chatContainer.appendChild(msgDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function generateRandomString(length) {
+        const words = ["apple", "banana", "cat", "dog", "elephant", "fox", "grape", "hat", "igloo", "jungle", "kite", "lion", "monkey", "nest", "orange", "penguin", "queen", "rabbit", "snake", "tiger"];
+        let result = "";
+        while (result.length < length) {
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            result += (result === "" ? "" : " ") + randomWord;
+        }
+        return result;
+    }
+
+    // Allow Enter key to send message
+    userInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    });
+</script>
+
+</body>
+</html>
