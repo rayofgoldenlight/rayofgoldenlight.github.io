@@ -200,15 +200,24 @@
   </main>
 
   <script>
+    // Temporary images list
+    const genimg = ['https://i.postimg.cc/LsFvRSNY/l1.jpg','https://i.postimg.cc/Jhj6B0G5/l10.jpg','https://i.postimg.cc/t4KvTWCg/l11.jpg','https://i.postimg.cc/Nj9PBptV/l12.jpg','https://i.postimg.cc/ZKDDGXGp/l13.jpg','https://i.postimg.cc/hPG53K5K/l14.jpg','https://i.postimg.cc/gcs7Dx4M/l15.jpg','https://i.postimg.cc/SRSv44Q7/l16.jpg','https://i.postimg.cc/tJBmCcY0/l17.jpg','https://i.postimg.cc/xCy4B8Q1/l18.jpg','https://i.postimg.cc/rmLHhWvH/l19.jpg','https://i.postimg.cc/6pvzDqLx/l2.jpg','https://i.postimg.cc/Xv5hcxDF/l20.jpg','https://i.postimg.cc/kXZf1KSy/l3.jpg','https://i.postimg.cc/65TMfY83/l4.jpg','https://i.postimg.cc/66MHZD5g/l5.jpg','https://i.postimg.cc/WzYXPJHT/l6.jpg','https://i.postimg.cc/RhZX8TGg/l7.jpg','https://i.postimg.cc/3RBtnqjy/l8.jpg','https://i.postimg.cc/C1YvC08T/l9.jpg','https://i.postimg.cc/RCjmvBY5/b1.jpg','https://i.postimg.cc/ZYyk7Q5f/c1.jpg','https://i.postimg.cc/Dyq9FbsL/d1.jpg','https://i.postimg.cc/RVrkjT3v/d2.jpg','https://i.postimg.cc/W4SYzGbq/do1.jpg','https://i.postimg.cc/mZ7XFWDG/f1.jpg','https://i.postimg.cc/y6R5XSLt/f10.jpg','https://i.postimg.cc/fyYrw63D/f11.jpg','https://i.postimg.cc/kGPThfTZ/f2.jpg','https://i.postimg.cc/JnkTq95Z/f3.jpg','https://i.postimg.cc/tgfSFXW9/f4.jpg','https://i.postimg.cc/9fzg444x/f5.jpg','https://i.postimg.cc/8zZnPdCJ/f6.jpg','https://i.postimg.cc/bwyBhVqf/f7.jpg','https://i.postimg.cc/FsgBwX5x/f8.jpg','https://i.postimg.cc/vHdKPHjB/f9.jpg','https://i.postimg.cc/Rh1grK80/h1.jpg','https://i.postimg.cc/wvZCxX0c/hy1.jpg','https://i.postimg.cc/rpn63X4H/hy2.jpg','https://i.postimg.cc/hjXFqybt/hyd1.jpg','https://i.postimg.cc/d0tP5thd/hyd2.jpg','https://i.postimg.cc/x1PVGb1n/hyd3.jpg','https://i.postimg.cc/cLWN8cZF/hyd4.jpg','https://i.postimg.cc/tCWjTc01/hyd5.jpg','https://i.postimg.cc/RZ5DDCDh/j1.jpg','https://i.postimg.cc/dtTf6Zng/li1.jpg','https://i.postimg.cc/wMkQ4Hyy/m1.jpg','https://i.postimg.cc/63kPx9pM/m10.jpg','https://i.postimg.cc/XqWggXJ6/m2.jpg','https://i.postimg.cc/26hwvnCx/m3.jpg','https://i.postimg.cc/nL62C3fz/m4.jpg','https://i.postimg.cc/MGct6h4N/m5.jpg','https://i.postimg.cc/rwZQL8h5/m6.jpg','https://i.postimg.cc/t442f1zX/m7.jpg','https://i.postimg.cc/ZKcwVPp7/m8.jpg','https://i.postimg.cc/m2RdYpz1/m9.jpg','https://i.postimg.cc/G3Br02qx/mt1.jpg','https://i.postimg.cc/3xXc5MsB/n1.jpg','https://i.postimg.cc/vmGSGqMd/n2.jpg','https://i.postimg.cc/vTx00C75/p.jpg','https://i.postimg.cc/V5yDp44p/p1.jpg','https://i.postimg.cc/hj5CbKmS/p34.jpg','https://i.postimg.cc/LXXC1JnC/p5.jpg','https://i.postimg.cc/85JYYFNF/t1.jpg','https://i.postimg.cc/3wb69j55/t2.jpg','https://i.postimg.cc/hGG69yY1/t3.jpg','https://i.postimg.cc/7Z9jJ8KL/t4.jpg','https://i.postimg.cc/wjgSBTcP/t5.jpg','https://i.postimg.cc/HnMfrrNG/v1.jpg']
+
+    // Function to pick a random generic image
+    function gri(){
+      const idx = Math.floor(Math.random() * genimg.length);
+      return genimg[idx];
+    }
+    
     const PROJECTS = [
-      {id:'p-001',name:'Todo App',desc:'A simple todo list app built with vanilla JavaScript.',url:'#',tags:['JavaScript','HTML','CSS'],color:'blue', image:'https://via.placeholder.com/400x200'},
-      {id:'p-002',name:'Data Analyzer',desc:'A Python script that processes and visualizes CSV data.',url:'#',tags:['Python'],color:'red', image:'https://via.placeholder.com/400x200'},
-      {id:'p-003',name:'Rust Optimizer',desc:'A Rust tool that optimizes CSV files for faster queries.',url:'#',tags:['Rust'],color:'green', image:'https://via.placeholder.com/400x200'},
-      {id:'p-004',name:'Web Scraper',desc:'A Python script that scrapes and cleans data from websites.',url:'#',tags:['Python'],color:'yellow', image:'https://via.placeholder.com/400x200'},
-      {id:'p-005',name:'Portfolio Site',desc:'A personal website for showcasing projects with filters.',url:'#',tags:['JavaScript','HTML','CSS'],color:'purple', image:'https://via.placeholder.com/400x200'},
-      {id:'p-006',name:'File Sync',desc:'A Rust application that syncs files between devices.',url:'#',tags:['Rust'],color:'orange', image:'https://via.placeholder.com/400x200'},
-      {id:'p-007',name:'Chat Widget',desc:'A small JavaScript widget for embedding live chat into sites.',url:'#',tags:['JavaScript'],color:'pink', image:'https://via.placeholder.com/400x200'},
-      {id:'p-008',name:'Scratch Work',desc:'Scrap projects and work that are free for others to build upon',url:'scrap',tags:['HTML'],color:'orange', image:'https://i.postimg.cc/j5pWLdsG/thesun.png'}
+      {id:'p-001',name:'Todo App',desc:'A simple todo list app built with vanilla JavaScript.',url:'#',tags:['JavaScript','HTML','CSS'],color:'blue', image:gri()},
+      {id:'p-002',name:'Data Analyzer',desc:'A Python script that processes and visualizes CSV data.',url:'#',tags:['Python'],color:'red', image:gri()},
+      {id:'p-003',name:'Rust Optimizer',desc:'A Rust tool that optimizes CSV files for faster queries.',url:'#',tags:['Rust'],color:'green', image:gri()},
+      {id:'p-004',name:'Web Scraper',desc:'A Python script that scrapes and cleans data from websites.',url:'#',tags:['Python'],color:'yellow', image:gri()},
+      {id:'p-005',name:'Portfolio Site',desc:'A personal website for showcasing projects with filters.',url:'#',tags:['JavaScript','HTML','CSS'],color:'purple', image:gri()},
+      {id:'p-006',name:'File Sync',desc:'A Rust application that syncs files between devices.',url:'#',tags:['Rust'],color:'orange', image:gri()},
+      {id:'p-007',name:'Chat Widget',desc:'A small JavaScript widget for embedding live chat into sites.',url:'#',tags:['JavaScript'],color:'pink', image:gri()},
+      {id:'p-008',name:'Scratch Work',desc:'Scrap projects and work that are free for others to build upon',url:'scrap/scrapdirectory.html',tags:['HTML'],color:'orange', image:'https://i.postimg.cc/j5pWLdsG/thesun.png'}
     ];
 
     function renderProjects() {
