@@ -141,7 +141,7 @@
     <div>
       <h1>Ray's Tools</h1>
       <div class="sidebar-description">
-        <p>
+        <p> 
             Mission:
             <br>To create a world where everyone can be free.
         </p>
@@ -181,7 +181,7 @@
       <div class="shortcuts">
         <p><strong>Shortcuts:</strong></p>
         <ul>
-          <li><code>/</code> → Toggle search focus</li>
+          <li><code>/</code> → Focus search</li>
           <li><code>L</code> → Cycle language filter</li>
           <li><code>K</code> → Cycle color filter</li>
         </ul>
@@ -207,8 +207,7 @@
       {id:'p-004',name:'Web Scraper',desc:'A Python script that scrapes and cleans data from websites.',url:'#',tags:['Python'],color:'yellow', image:'https://via.placeholder.com/400x200'},
       {id:'p-005',name:'Portfolio Site',desc:'A personal website for showcasing projects with filters.',url:'#',tags:['JavaScript','HTML','CSS'],color:'purple', image:'https://via.placeholder.com/400x200'},
       {id:'p-006',name:'File Sync',desc:'A Rust application that syncs files between devices.',url:'#',tags:['Rust'],color:'orange', image:'https://via.placeholder.com/400x200'},
-      {id:'p-007',name:'Chat Widget',desc:'A small JavaScript widget for embedding live chat into sites.',url:'#',tags:['JavaScript'],color:'pink', image:'https://via.placeholder.com/400x200'},
-      {id:'p-008',name:'Scratch Work',desc:'Scrap projects and work that are free for others to build upon',url:'scrap',tags:['HTML'],color:'orange', image:'https://i.postimg.cc/j5pWLdsG/thesun.png'}
+      {id:'p-007',name:'Chat Widget',desc:'A small JavaScript widget for embedding live chat into sites.',url:'#',tags:['JavaScript'],color:'pink', image:'https://via.placeholder.com/400x200'}
     ];
 
     function renderProjects() {
@@ -256,34 +255,17 @@
     }
 
     // Keyboard shortcuts
-    let searchFocused = false;
-
     document.addEventListener('keydown', (e) => {
-      const searchBar = document.getElementById('search-bar');
       if (e.key === '/') {
         e.preventDefault();
-        if (searchFocused) {
-          searchBar.blur();
-          searchFocused = false;
-        } else {
-          searchBar.focus();
-          searchFocused = true;
-        }
-      } else if (!searchFocused && e.key === 'l') {
+        document.getElementById('search-bar').focus();
+      } else if (e.key === 'l') {
         e.preventDefault();
         cycleSelect('language-filter');
-      } else if (!searchFocused && e.key === 'k') {
+      } else if (e.key === 'k') {
         e.preventDefault();
         cycleSelect('color-filter');
       }
-    });
-
-    document.getElementById('search-bar').addEventListener('blur', () => {
-      searchFocused = false;
-    });
-
-    document.getElementById('search-bar').addEventListener('focus', () => {
-      searchFocused = true;
     });
 
     function cycleSelect(id) {

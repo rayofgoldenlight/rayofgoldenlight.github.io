@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Project Portfolio</title>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      margin: 0;
+      padding: 0;
+      background: #fdfdfd;
+      color: #111;
+      display: flex;
+    }
+
+    header {
+      padding: 1rem;
+      background: #f0f0f0;
+      border-right: 1px solid #ccc;
+      width: 260px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .sidebar-description {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #444;
+    }
+
+    .filters {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 0.4rem;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      background: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 1rem;
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .project {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .project img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .project-content {
+      padding: 1rem;
+      flex-grow: 1;
+    }
+
+    .tags {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      list-style: none;
+      padding: 0;
+    }
+
+    .tag {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #eee;
+    }
+
+    .color-tag {
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Portfolio</h1>
+    <div class="sidebar-description">
+      <p>Welcome to my hacker-themed light mode portfolio. Browse projects by language, color, or search for keywords in their titles and descriptions.</p>
+    </div>
+
+    <div class="filters">
+      <label for="search-bar">Search</label>
+      <input type="text" id="search-bar" placeholder="Search projects..." oninput="applyFilters()">
+    </div>
+
+    <div class="filters">
+      <label for="language-filter">Language</label>
+      <select id="language-filter" onchange="applyFilters()">
+        <option value="all">All</option>
+        <option value="JavaScript">JavaScript</option>
+        <option value="Python">Python</option>
+        <option value="Rust">Rust</option>
+      </select>
+    </div>
+
+    <div class="filters">
+      <label for="color-filter">Color</label>
+      <select id="color-filter" onchange="applyFilters()">
+        <option value="all">All</option>
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="yellow">Yellow</option>
+        <option value="purple">Purple</option>
+        <option value="orange">Orange</option>
+        <option value="pink">Pink</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <div class="projects">
+      <div class="project" data-tags="JavaScript HTML CSS blue">
+        <img src="https://via.placeholder.com/400x200" alt="Project 1">
+        <div class="project-content">
+          <h3>Todo App</h3>
+          <p>A simple todo list app built with vanilla JavaScript.</p>
+          <ul class="tags">
+            <li class="tag">JavaScript</li>
+            <li class="tag">HTML</li>
+            <li class="tag">CSS</li>
+            <li class="color-tag" style="background: blue;">Blue</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project" data-tags="Python red">
+        <img src="https://via.placeholder.com/400x200" alt="Project 2">
+        <div class="project-content">
+          <h3>Data Analyzer</h3>
+          <p>A Python script that processes and visualizes CSV data.</p>
+          <ul class="tags">
+            <li class="tag">Python</li>
+            <li class="color-tag" style="background: red;">Red</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project" data-tags="Rust green">
+        <img src="https://via.placeholder.com/400x200" alt="Project 3">
+        <div class="project-content">
+          <h3>Rust Optimizer</h3>
+          <p>A Rust tool that optimizes CSV files for faster queries.</p>
+          <ul class="tags">
+            <li class="tag">Rust</li>
+            <li class="color-tag" style="background: green;">Green</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project" data-tags="Python yellow">
+        <img src="https://via.placeholder.com/400x200" alt="Project 4">
+        <div class="project-content">
+          <h3>Web Scraper</h3>
+          <p>A Python script that scrapes and cleans data from websites.</p>
+          <ul class="tags">
+            <li class="tag">Python</li>
+            <li class="color-tag" style="background: gold;">Yellow</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project" data-tags="JavaScript HTML CSS purple">
+        <img src="https://via.placeholder.com/400x200" alt="Project 5">
+        <div class="project-content">
+          <h3>Portfolio Site</h3>
+          <p>A personal website for showcasing projects with filters.</p>
+          <ul class="tags">
+            <li class="tag">JavaScript</li>
+            <li class="tag">HTML</li>
+            <li class="tag">CSS</li>
+            <li class="color-tag" style="background: purple;">Purple</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project" data-tags="Rust orange">
+        <img src="https://via.placeholder.com/400x200" alt="Project 6">
+        <div class="project-content">
+          <h3>File Sync</h3>
+          <p>A Rust application that syncs files between devices.</p>
+          <ul class="tags">
+            <li class="tag">Rust</li>
+            <li class="color-tag" style="background: orange;">Orange</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project" data-tags="JavaScript pink">
+        <img src="https://via.placeholder.com/400x200" alt="Project 7">
+        <div class="project-content">
+          <h3>Chat Widget</h3>
+          <p>A small JavaScript widget for embedding live chat into sites.</p>
+          <ul class="tags">
+            <li class="tag">JavaScript</li>
+            <li class="color-tag" style="background: hotpink;">Pink</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function applyFilters() {
+      const language = document.getElementById('language-filter').value;
+      const color = document.getElementById('color-filter').value;
+      const search = document.getElementById('search-bar').value.toLowerCase();
+      const projects = document.querySelectorAll('.project');
+
+      projects.forEach(project => {
+        const tags = project.getAttribute('data-tags');
+        const text = project.innerText.toLowerCase();
+        const matchesLanguage = language === 'all' || tags.includes(language);
+        const matchesColor = color === 'all' || tags.includes(color);
+        const matchesSearch = text.includes(search);
+        if (matchesLanguage && matchesColor && matchesSearch) {
+          project.style.display = 'flex';
+        } else {
+          project.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
