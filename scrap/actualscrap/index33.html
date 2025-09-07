@@ -219,37 +219,20 @@
     }
     
     const PROJECTS = [
-      {id:'p-00001',name:'Todo App',desc:'A simple todo list app built with vanilla JavaScript.',url:'#',tags:['JavaScript','HTML','CSS'],color:'blue', image:gri()},
-      {id:'p-00002',name:'Data Analyzer',desc:'A Python script that processes and visualizes CSV data.',url:'#',tags:['Python'],color:'red', image:gri()},
-      {id:'p-00003',name:'Rust Optimizer',desc:'A Rust tool that optimizes CSV files for faster queries.',url:'#',tags:['Rust'],color:'green', image:gri()},
-      {id:'p-00004',name:'Web Scraper',desc:'A Python script that scrapes and cleans data from websites.',url:'#',tags:['Python'],color:'yellow', image:gri()},
-      {id:'p-00005',name:'Portfolio Site',desc:'A personal website for showcasing projects with filters.',url:'#',tags:['JavaScript','HTML','CSS'],color:'purple', image:gri()},
-      {id:'p-00006',name:'File Sync',desc:'A Rust application that syncs files between devices.',url:'#',tags:['Rust'],color:'orange', image:gri()},
-      {id:'p-00007',name:'Chat Widget',desc:'A small JavaScript widget for embedding live chat into sites.',url:'#',tags:['JavaScript'],color:'pink', image:gri()},
-      {id:'p-00008',name:'Scratch Work',desc:'Scrap projects and work that are free for others to build upon',url:'scrap/scrapdirectory.html',tags:['HTML'],color:'orange', image:'https://i.postimg.cc/j5pWLdsG/thesun.png'}
+      {id:'p-001',name:'Todo App',desc:'A simple todo list app built with vanilla JavaScript.',url:'#',tags:['JavaScript','HTML','CSS'],color:'blue', image:gri()},
+      {id:'p-002',name:'Data Analyzer',desc:'A Python script that processes and visualizes CSV data.',url:'#',tags:['Python'],color:'red', image:gri()},
+      {id:'p-003',name:'Rust Optimizer',desc:'A Rust tool that optimizes CSV files for faster queries.',url:'#',tags:['Rust'],color:'green', image:gri()},
+      {id:'p-004',name:'Web Scraper',desc:'A Python script that scrapes and cleans data from websites.',url:'#',tags:['Python'],color:'yellow', image:gri()},
+      {id:'p-005',name:'Portfolio Site',desc:'A personal website for showcasing projects with filters.',url:'#',tags:['JavaScript','HTML','CSS'],color:'purple', image:gri()},
+      {id:'p-006',name:'File Sync',desc:'A Rust application that syncs files between devices.',url:'#',tags:['Rust'],color:'orange', image:gri()},
+      {id:'p-007',name:'Chat Widget',desc:'A small JavaScript widget for embedding live chat into sites.',url:'#',tags:['JavaScript'],color:'pink', image:gri()},
+      {id:'p-008',name:'Scratch Work',desc:'Scrap projects and work that are free for others to build upon',url:'scrap/scrapdirectory.html',tags:['HTML'],color:'orange', image:'https://i.postimg.cc/j5pWLdsG/thesun.png'}
     ];
 
     function renderProjects() {
       const container = document.getElementById('projects-container');
       container.innerHTML = '';
-
-      // Make a copy of PROJECTS
-      let sortedProjects = [...PROJECTS];
-
-      // Get sort setting
-      const sortSelect = document.getElementById("sort")?.value || "newest";
-
-      // Apply sorting
-      sortedProjects.sort((a, b) => {
-        if (sortSelect === "newest") {
-          return b.id.localeCompare(a.id); // Newest first
-        } else {
-          return a.id.localeCompare(b.id); // Oldest first
-        }
-      });
-
-      // Render projects
-      sortedProjects.forEach(p => {
+      PROJECTS.forEach(p => {
         const project = document.createElement('div');
         project.className = 'project';
         project.setAttribute('data-tags', p.tags.join(' ') + ' ' + p.color);
@@ -261,9 +244,7 @@
             <p>${p.desc}</p>
             <ul class="tags">
               ${p.tags.map(tag => `<li class="tag">${tag}</li>`).join('')}
-              <li class="color-tag" style="background:${p.color};">
-                ${p.color.charAt(0).toUpperCase()+p.color.slice(1)}
-              </li>
+              <li class="color-tag" style="background:${p.color};">${p.color.charAt(0).toUpperCase()+p.color.slice(1)}</li>
             </ul>
           </div>
         `;
@@ -331,13 +312,7 @@
       applyFilters();
     }
 
-    document.getElementById("sort").addEventListener("change", renderProjects);
-    
-    
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("sort").value = "newest";
-      renderProjects();
-    });
+    renderProjects();
   </script>
 </body>
 </html>
