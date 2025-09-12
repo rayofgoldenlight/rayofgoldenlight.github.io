@@ -24,6 +24,7 @@ Note: The HTML song analysis rendering website (https://rayofgoldenlight.github.
 Calibration: Set expected “typical good songs” to land ~60–70%, “mediocre” to ~40–50%, “genius” ≥85% 
 Right now, most average tracks get 40–55%
 
+Note (for a 7-minute song): No parameters should run under 10 seconds. All parameters should run under 90 seconds.
 
 The code for this is provided at:
 https://github.com/rayofgoldenlight/rayofgoldenlight.github.io/tree/main/projects/geniusMusicRater/cprogram
@@ -38,4 +39,4 @@ May you make a song that is truly genius.
 
 
 
-Go back to initial site: rayofgoldenlight.github.io
+Go back to the initial site: rayofgoldenlight.github.io
