@@ -1,5 +1,5 @@
 {
-  "file": "in_love.mp3",
+  "file": "like_me.mp3",
   "original": {
     "sample_rate": 48000,
     "channels": 2,
@@ -19,7 +19,6 @@
   "features": {
     "tempo_bpm": 87.59,
     "key": "A min",
-    "chord_progression": null,
     "spectral": {
       "centroid": 672.39,
       "rolloff": 1096.79,

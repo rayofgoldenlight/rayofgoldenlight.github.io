@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Song Analysis Visualization</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f5f5f5;
+    color: #333;
+  }
+  h1, h2 {
+    text-align: center;
+  }
+  .container {
+    max-width: 1200px;
+    margin: auto;
+  }
+  .section {
+    background: #fff;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .collapsible {
+    cursor: pointer;
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    text-align: left;
+    width: 100%;
+    background: #eee;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  .content {
+    display: none;
+    padding-left: 15px;
+    margin-top: 5px;
+  }
+  .score {
+    font-weight: bold;
+  }
+  .highlight {
+    color: #d9534f;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+  }
+  td, th {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  th {
+    background: #f0f0f0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Song Analysis: <span id="fileName"></span></h1>
+  <div class="section" id="geniusScore">
+    <h2>Genius Score</h2>
+    <p>Overall Score: <span class="score" id="overallScore"></span></p>
+    <p>Is Genius: <span id="isGenius"></span></p>
+    <p>Confidence: <span id="geniusConfidence"></span></p>
+    <button class="collapsible">Category Scores & Explanation</button>
+    <div class="content" id="categoryScores"></div>
+  </div>
+  <div class="section" id="basicStats">
+    <h2>Basic Stats</h2>
+    <div id="basicStatsContent"></div>
+  </div>
+  <div class="section" id="features">
+    <h2>Features</h2>
+    <div id="featuresContent"></div>
+  </div>
+  <div class="section" id="rhythm">
+    <h2>Rhythm</h2>
+    <div id="rhythmContent"></div>
+  </div>
+  <div class="section" id="harmony">
+    <h2>Harmony</h2>
+    <div id="harmonyContent"></div>
+  </div>
+  <div class="section" id="melody">
+    <h2>Melody</h2>
+    <div id="melodyContent"></div>
+  </div>
+  <div class="section" id="structure">
+    <h2>Structure</h2>
+    <div id="structureContent"></div>
+  </div>
+  <div class="section" id="production">
+    <h2>Production</h2>
+    <div id="productionContent"></div>
+  </div>
+  <div class="section" id="psychoacoustics">
+    <h2>Psychoacoustics</h2>
+    <div id="psychoContent"></div>
+  </div>
+</div>
+
+<script>
+const data = {
+  "file": "good-vibe.mp3",
+  "original": {
+    "sample_rate": 48000,
+    "channels": 2,
+    "frames": 8098560
+  },
+  "analysis_basis": {
+    "resampled_sample_rate": 44100,
+    "mono_frames": 7440552
+  },
+  "basic_stats": {
+    "duration_seconds": 168.720000,
+    "rms": 0.115446,
+    "peak": 0.777723,
+    "dc_offset": -0.000029,
+    "zero_crossings_per_second": 2899.105026
+  },
+  "features": {
+    "tempo_bpm": 64.60,
+    "key": "F maj",
+    "spectral": {
+      "centroid": 1013.46,
+      "rolloff": 1794.12,
+      "brightness": 0.1577,
+      "mfcc": [-4.0032, 61.9310, -24.6788, 26.7714, -15.4215, 4.2106, 1.7758, -8.5655, 4.7637, -2.0855, -1.8937, 2.4364, -1.7409]
+    }
+  },
+  "psychoacoustics": {
+    "roughness": 0.397511,
+    "dissonance": 0.538203,
+    "loudness_lu": -19.38,
+    "dynamic_range_db": 23.26
+  },
+  "ratings": {
+    "harmonic_quality": 70,
+    "progression_quality": 78,
+    "pleasantness": 37,
+    "creativity": 82,
+    "overall_grade": 66,
+    "rating_profile": "rap"
+  },
+    "rhythm": {
+      "tempo_bpm": 64.60,
+      "tempo_confidence": 0.02,
+      "beat_strength": 0.0086,
+      "pulse_clarity": 0.4939,
+      "syncopation": 0.5061,
+      "swing_ratio": 1.10
+    },
+  "harmony": {
+    "global_key": "F",
+    "key_stability": 0.969,
+    "modulation_count": 6.0,
+    "harmonic_motion": 0.776,
+    "tension": 0.244,
+    "chords": [{"time_sec": 0.00, "name": "Em"}, {"time_sec": 0.93, "name": "A#"}, {"time_sec": 1.86, "name": "F"}, {"time_sec": 2.79, "name": "F"}, {"time_sec": 3.72, "name": "C"}, {"time_sec": 4.64, "name": "A#"}, {"time_sec": 5.57, "name": "F"}, {"time_sec": 6.50, "name": "A#"}, {"time_sec": 7.43, "name": "F"}, {"time_sec": 8.36, "name": "Fm"}, {"time_sec": 9.29, "name": "C"}, {"time_sec": 10.22, "name": "A#"}, {"time_sec": 11.15, "name": "C"}, {"time_sec": 12.07, "name": "A#"}, {"time_sec": 13.00, "name": "Cm"}, {"time_sec": 13.93, "name": "F#"}, {"time_sec": 14.86, "name": "F"}, {"time_sec": 15.79, "name": "Fm"}, {"time_sec": 16.72, "name": "G"}, {"time_sec": 17.65, "name": "A#"}, {"time_sec": 18.58, "name": "C"}, {"time_sec": 19.50, "name": "Fm"}, {"time_sec": 20.43, "name": "C"}, {"time_sec": 21.36, "name": "D#m"}, {"time_sec": 22.29, "name": "F"}, {"time_sec": 23.22, "name": "Fm"}, {"time_sec": 24.15, "name": "C"}, {"time_sec": 25.08, "name": "Bm"}, {"time_sec": 26.01, "name": "C"}, {"time_sec": 26.94, "name": "Fm"}, {"time_sec": 27.86, "name": "F"}, {"time_sec": 28.79, "name": "C"}, {"time_sec": 29.72, "name": "Fm"}, {"time_sec": 30.65, "name": "D"}, {"time_sec": 31.58, "name": "A#"}, {"time_sec": 32.51, "name": "F#"}, {"time_sec": 33.44, "name": "Fm"}, {"time_sec": 34.37, "name": "D#m"}, {"time_sec": 35.29, "name": "A#"}, {"time_sec": 36.22, "name": "D#m"}, {"time_sec": 37.15, "name": "F"}, {"time_sec": 38.08, "name": "D"}, {"time_sec": 39.01, "name": "B"}, {"time_sec": 39.94, "name": "F#"}, {"time_sec": 40.87, "name": "Em"}, {"time_sec": 41.80, "name": "F#m"}, {"time_sec": 42.72, "name": "A"}, {"time_sec": 43.65, "name": "F#"}, {"time_sec": 44.58, "name": "F"}, {"time_sec": 45.51, "name": "F#"}, {"time_sec": 46.44, "name": "F"}, {"time_sec": 47.37, "name": "D"}, {"time_sec": 48.30, "name": "Gm"}, {"time_sec": 49.23, "name": "Em"}, {"time_sec": 50.16, "name": "Dm"}, {"time_sec": 51.08, "name": "F#"}, {"time_sec": 52.01, "name": "G"}, {"time_sec": 52.94, "name": "F#"}, {"time_sec": 53.87, "name": "Am"}, {"time_sec": 54.80, "name": "D#m"}, {"time_sec": 55.73, "name": "A#"}, {"time_sec": 56.66, "name": "F#m"}, {"time_sec": 57.59, "name": "A#m"}, {"time_sec": 58.51, "name": "Gm"}, {"time_sec": 59.44, "name": "G"}, {"time_sec": 60.37, "name": "Gm"}, {"time_sec": 61.30, "name": "A#"}, {"time_sec": 62.23, "name": "A#"}, {"time_sec": 63.16, "name": "Bm"}, {"time_sec": 64.09, "name": "D#"}, {"time_sec": 65.02, "name": "Em"}, {"time_sec": 65.94, "name": "D"}, {"time_sec": 66.87, "name": "A#m"}, {"time_sec": 67.80, "name": "Dm"}, {"time_sec": 68.73, "name": "A#m"}, {"time_sec": 69.66, "name": "Gm"}, {"time_sec": 70.59, "name": "F#m"}, {"time_sec": 71.52, "name": "A#m"}, {"time_sec": 72.45, "name": "F"}, {"time_sec": 73.38, "name": "D"}, {"time_sec": 74.30, "name": "A"}, {"time_sec": 75.23, "name": "C"}, {"time_sec": 76.16, "name": "C"}, {"time_sec": 77.09, "name": "G#"}, {"time_sec": 78.02, "name": "F#"}, {"time_sec": 78.95, "name": "Fm"}, {"time_sec": 79.88, "name": "C"}, {"time_sec": 80.81, "name": "F"}, {"time_sec": 81.73, "name": "A"}, {"time_sec": 82.66, "name": "A#"}, {"time_sec": 83.59, "name": "F"}, {"time_sec": 84.52, "name": "C"}, {"time_sec": 85.45, "name": "A#"}, {"time_sec": 86.38, "name": "Gm"}, {"time_sec": 87.31, "name": "C"}, {"time_sec": 88.24, "name": "C"}, {"time_sec": 89.16, "name": "A#"}, {"time_sec": 90.09, "name": "D#m"}, {"time_sec": 91.02, "name": "F"}, {"time_sec": 91.95, "name": "F"}, {"time_sec": 92.88, "name": "D#"}, {"time_sec": 93.81, "name": "A#"}, {"time_sec": 94.74, "name": "F"}, {"time_sec": 95.67, "name": "Dm"}, {"time_sec": 96.60, "name": "C"}, {"time_sec": 97.52, "name": "A#"}, {"time_sec": 98.45, "name": "A#m"}, {"time_sec": 99.38, "name": "Am"}, {"time_sec": 100.31, "name": "G"}, {"time_sec": 101.24, "name": "Gm"}, {"time_sec": 102.17, "name": "F"}, {"time_sec": 103.10, "name": "D#"}, {"time_sec": 104.03, "name": "Am"}, {"time_sec": 104.95, "name": "A#"}, {"time_sec": 105.88, "name": "F"}, {"time_sec": 106.81, "name": "A#m"}, {"time_sec": 107.74, "name": "Gm"}, {"time_sec": 108.67, "name": "A#"}, {"time_sec": 109.60, "name": "F"}, {"time_sec": 110.53, "name": "G#m"}, {"time_sec": 111.46, "name": "C"}, {"time_sec": 112.38, "name": "A#"}, {"time_sec": 113.31, "name": "F"}, {"time_sec": 114.24, "name": "F"}, {"time_sec": 115.17, "name": "D"}, {"time_sec": 116.10, "name": "A#"}, {"time_sec": 117.03, "name": "F"}, {"time_sec": 117.96, "name": "Dm"}, {"time_sec": 118.89, "name": "C"}, {"time_sec": 119.81, "name": "A#"}, {"time_sec": 120.74, "name": "F"}, {"time_sec": 121.67, "name": "F"}, {"time_sec": 122.60, "name": "Gm"}, {"time_sec": 123.53, "name": "A#"}, {"time_sec": 124.46, "name": "F"}, {"time_sec": 125.39, "name": "D#"}, {"time_sec": 126.32, "name": "G"}, {"time_sec": 127.25, "name": "A#"}, {"time_sec": 128.17, "name": "F"}, {"time_sec": 129.10, "name": "E"}, {"time_sec": 130.03, "name": "Am"}, {"time_sec": 130.96, "name": "A#"}, {"time_sec": 131.89, "name": "A#m"}, {"time_sec": 132.82, "name": "Dm"}, {"time_sec": 133.75, "name": "A#"}, {"time_sec": 134.68, "name": "Bm"}, {"time_sec": 135.60, "name": "F"}, {"time_sec": 136.53, "name": "Am"}, {"time_sec": 137.46, "name": "A#m"}, {"time_sec": 138.39, "name": "F"}, {"time_sec": 139.32, "name": "A#m"}, {"time_sec": 140.25, "name": "Dm"}, {"time_sec": 141.18, "name": "A#"}, {"time_sec": 142.11, "name": "A#"}, {"time_sec": 143.03, "name": "C"}, {"time_sec": 143.96, "name": "F#"}, {"time_sec": 144.89, "name": "A#"}, {"time_sec": 145.82, "name": "A#"}, {"time_sec": 146.75, "name": "C"}, {"time_sec": 147.68, "name": "A#"}, {"time_sec": 148.61, "name": "A#"}, {"time_sec": 149.54, "name": "F"}, {"time_sec": 150.47, "name": "A#m"}, {"time_sec": 151.39, "name": "Gm"}, {"time_sec": 152.32, "name": "A#"}, {"time_sec": 153.25, "name": "F"}, {"time_sec": 154.18, "name": "F"}, {"time_sec": 155.11, "name": "Gm"}, {"time_sec": 156.04, "name": "A#"}, {"time_sec": 156.97, "name": "A#"}, {"time_sec": 157.90, "name": "F"}, {"time_sec": 158.82, "name": "Cm"}, {"time_sec": 159.75, "name": "Am"}, {"time_sec": 160.68, "name": "A#"}, {"time_sec": 161.61, "name": "F"}, {"time_sec": 162.54, "name": "G#"}, {"time_sec": 163.47, "name": "F"}, {"time_sec": 164.40, "name": "A#"}, {"time_sec": 165.33, "name": "A#"}, {"time_sec": 166.25, "name": "A#m"}, {"time_sec": 167.18, "name": "C#"}, {"time_sec": 168.11, "name": "Fm"}]
+  },
+  "melody": {
+    "median_f0": 235.58,
+    "mean_f0": 255.16,
+    "f0_confidence": 0.385,
+    "pitch_range_semitones": 42.00,
+    "contour_count": 576,
+    "avg_contour_length_sec": 0.113,
+    "longest_contour_sec": 0.859,
+    "avg_interval_semitones": 0.036,
+    "avg_abs_interval_semitones": 0.337,
+    "melodic_entropy": 0.483,
+    "motif_repetition_rate": 0.835,
+    "motif_count": 926,
+    "hook_strength": 0.024
+  },
+  "structure": {
+    "section_count": 6,
+    "arc_complexity": 0.983,
+    "repetition_ratio": 1.000,
+    "section_durations": [23.50, 20.50, 23.00, 40.00, 26.50, 35.22],
+    "duration_ratio": 1.95,
+    "section_labels_summary": {
+      "intro": 1,
+      "verse": 4,
+      "chorus": 1,
+      "bridge": 0,
+      "outro": 0
+    },
+    "has_chorus": true,
+    "structural_arcs": [0.000, 0.139, 0.261, 0.397, 0.634, 0.791],
+    "sections": [{"start_sec": 0.00, "end_sec": 23.50, "label": "intro"}, {"start_sec": 23.50, "end_sec": 44.00, "label": "verse"}, {"start_sec": 44.00, "end_sec": 67.00, "label": "verse"}, {"start_sec": 67.00, "end_sec": 107.00, "label": "chorus"}, {"start_sec": 107.00, "end_sec": 133.50, "label": "verse"}, {"start_sec": 133.50, "end_sec": 168.72, "label": "verse"}]
+  },
+  "production": {
+    "loudness_db": -18.63,
+    "dynamic_range_db": 16.87,
+    "stereo_width": 0.955,
+    "spectral_balance": 0.751,
+    "masking_index": 0.001
+  },
+  "genius": {
+    "overall_score": 44,
+    "is_genius": false,
+    "confidence": 0.202,
+    "categories": {
+      "harmony": 85,
+      "progression": 41,
+      "melody": 12,
+      "rhythm": 46,
+      "structure": 78,
+      "timbre": 38,
+      "creativity": 57,
+    "originality_score": 53,
+    "complexity_score": 62,
+    "genre_distance_score": 42,
+    "emotion_score": 38,
+    "explanation": {
+      "positive_contributors": [],
+      "negative_contributors": ["Technical penalties applied (7)", "Weak production/timbre (score 38)", "Unstable rhythm/pulse (score 46)"]
+    }
+    }
+  }
+}
+;
+
+document.getElementById("fileName").innerText = data.file;
+document.getElementById("overallScore").innerText = data.genius.overall_score;
+document.getElementById("isGenius").innerText = data.genius.is_genius ? "Yes" : "No";
+document.getElementById("geniusConfidence").innerText = data.genius.confidence;
+
+// Collapsible function
+document.querySelectorAll(".collapsible").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.nextElementSibling.style.display = 
+      btn.nextElementSibling.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Utility to render key-value tables
+function renderTable(obj) {
+  let html = "<table>";
+  for (let key in obj) {
+    let val = obj[key];
+
+    // If the value is an array of objects, render nicely
+    if (Array.isArray(val) && val.length > 0 && typeof val[0] === "object") {
+      val = val.map(v => JSON.stringify(v)).join("<br>");
+    } 
+    // If the value is an object, stringify it
+    else if (typeof val === "object" && val !== null) {
+      val = JSON.stringify(val);
+    }
+
+    html += `<tr><th>${key}</th><td>${val}</td></tr>`;
+  }
+  html += "</table>";
+  return html;
+}
+
+// Genius categories
+let catHtml = "<table>";
+for (let cat in data.genius.categories) {
+  if (cat === "explanation") continue;
+  catHtml += `<tr><th>${cat}</th><td>${data.genius.categories[cat]}</td></tr>`;
+}
+catHtml += "</table>";
+
+catHtml += "<h4>Explanation</h4>";
+catHtml += "<b>Positive Contributors:</b> " + (data.genius.categories.explanation.positive_contributors.join(", ") || "None") + "<br>";
+catHtml += "<b>Negative Contributors:</b> " + data.genius.categories.explanation.negative_contributors.join(", ");
+
+document.getElementById("categoryScores").innerHTML = catHtml;
+
+// Populate other sections
+document.getElementById("basicStatsContent").innerHTML = renderTable(data.basic_stats);
+document.getElementById("featuresContent").innerHTML = renderTable(data.features);
+document.getElementById("rhythmContent").innerHTML = renderTable(data.rhythm);
+document.getElementById("harmonyContent").innerHTML = renderTable(data.harmony);
+document.getElementById("melodyContent").innerHTML = renderTable(data.melody);
+document.getElementById("structureContent").innerHTML = renderTable(data.structure);
+document.getElementById("productionContent").innerHTML = renderTable(data.production);
+document.getElementById("psychoContent").innerHTML = renderTable(data.psychoacoustics);
+</script>
+</body>
+</html>

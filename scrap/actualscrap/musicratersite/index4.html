@@ -162,54 +162,6 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   transform: scale(1.05);
 }
-
-/* Genius Section Visual Enhancements */
-.genius-status {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 12px;
-  font-weight: bold;
-  color: #fff;
-  background: #f0d879; /* soft yellow */
-  margin-right: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.genius-yes { background: #f0d879; color: #111; }   /* Yes = yellow */
-.genius-no  { background: #eee; color: #555; }      /* No = grey */
-
-.confidence-bar {
-  height: 16px;
-  background: #f7f4ec;
-  border-radius: 12px;
-  overflow: hidden;
-  margin: 6px 0 12px 0;
-}
-
-.confidence-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #f0d879, #f7e6a0);
-  width: 0;
-  transition: width 1s ease-out;
-  border-radius: 12px;
-}
-
-.contributors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.contributor-box {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.9em;
-  font-weight: bold;
-}
-
-.contributor-positive { background: #fff9e6; color: #111; border: 1px solid #f0d879; }
-.contributor-negative { background: #ffe6e6; color: #222; border: 1px solid #f0b0b0; }
 </style>
 </head>
 <body>
@@ -220,12 +172,9 @@
   <h2>Song Analysis Examples & Resources</h2>
 
   <div class="resource-links">
-    Analysis Examples:
-    <a href="like_me.html" target="_blank">Like Me (Pop)</a>
-    <a href="good-vibe.html" target="_blank">Good Vibe (Rap)</a>
-    <a href="reafs.html" target="_blank">Reafs (Experimental)</a>
-    <a href="fell.html" target="_blank">Fell (Default)</a>
-    <a href="https://github.com/rayofgoldenlight/rayofgoldenlight.github.io/tree/main/projects/geniusMusicRater/cprogram/build" target="_blank">Download Genius Music Rater</a>
+    <a href="example1.html" target="_blank">Example Analysis 1</a>
+    <a href="example2.html" target="_blank">Example Analysis 2</a>
+    <a href="https://github.com/yourusername/genius-music-rater" target="_blank">Download Genius Music Rater</a>
   </div>
 
   <button class="collapsible">How to Use Genius Music Rater</button>
@@ -246,27 +195,13 @@
     </p>
 
     <pre style="background:#f7f4ec; padding:10px; border-radius:6px;">
-Usage: mp3_analyzer.exe <input.mp3> [genre] [--m(elody)] [--s(tructure)] [--g(enius)]
-Genres: rap, vgm, pop, experimental, phonk, default
-Flags:  --m // --melody     enable melody feature extraction
-       --s // --structure  enable structure feature extraction
-       --g // --genius  enable genius rating
-
-Windows Examples (Command Prompt):
+Windows:
 mp3_analyzer.exe like_me.mp3 --m --s --g
-^generates 
-mp3_analyzer.exe reafs.mp3 experimental
 
-Linux Examples (Terminal):
+Linux:
 ./mp3_analyzer.exe like_me.mp3 --m --s --g
-./mp3_analyzer.exe reafs.mp3 experimental
-
-Note: The HTML song analysis rendering website only supports JSON pasted if all flags are enabled 
-      (write --m --s --g after your mp3 file if you want to use this site)
-
-Calibration: Set expected “typical good songs” to land ~60–70%, “mediocre” to ~40–50%, “genius” ≥85% 
-Right now, most average tracks get 40–55%
     </pre>
+
     <p>
       The analyzer supports several options:
       <br><b>--m / --melody</b>: enables melody extraction<br>
@@ -279,11 +214,10 @@ Right now, most average tracks get 40–55%
     </p>
 
     <p>
-      After execution, copy the JSON output (from the first <code>{</code> to the last <code>}</code>, do NOT include the Profile and Elasped Time sections) and paste it into this page to visualize your analysis.
+      After execution, copy the JSON output (from <code>{</code> to <code>}</code>) and paste it into this page to visualize your analysis.
     </p>
 
-    <p><em>Enjoy exploring what's hidden in your music.</em></p>
-    <p><em>And for creators, hope you are able to make a song that truly is, Genius</em></p>
+    <p><em>Enjoy exploring the Genius hidden in your music.</em></p>
   </div>
 </div>
 
@@ -324,51 +258,19 @@ function renderAnalysis(data) {
   document.getElementById("fileName").innerText = data.file || "Unknown";
 
   // Genius
-  // Genius
-let geniusHtml = `
-  <p>Overall Score: <span class="score">${data.genius.overall_score}%</span></p>
-  <div class="bar"><div class="bar-fill" style="width:${data.genius.overall_score}%"></div></div>
-  
-  <p>
-    <span class="genius-status ${data.genius.is_genius ? 'genius-yes' : 'genius-no'}">
-      ${data.genius.is_genius ? 'Genius' : 'Not Genius'}
-    </span>
-  </p>
-  
-  <p>Confidence: <span class="score">${(data.genius.confidence*100).toFixed(2)}%</span></p>
-  <div class="confidence-bar">
-    <div class="confidence-fill" style="width:${data.genius.confidence*100}%"></div>
-  </div>
-
-  <h4>Category Scores</h4>
-  <table>
-`;
-
-for (let cat in data.genius.categories) {
-  if (cat === "explanation") continue;
-  geniusHtml += `<tr>
-    <th>${cat}</th>
-    <td>
-      <div class="bar"><div class="bar-fill" style="width:${data.genius.categories[cat]}%"></div></div>
-      ${data.genius.categories[cat]}%
-    </td>
-  </tr>`;
-}
-
-geniusHtml += `</table>
-  <h4>Explanation</h4>
-  <p><b>Positive Contributors:</b></p>
-  <div class="contributors">
-    ${(data.genius.categories.explanation?.positive_contributors || ["None"]).map(c => `<span class="contributor-box contributor-positive">${c}</span>`).join("")}
-  </div>
-
-  <p><b>Negative Contributors:</b></p>
-  <div class="contributors">
-    ${(data.genius.categories.explanation?.negative_contributors || ["None"]).map(c => `<span class="contributor-box contributor-negative">${c}</span>`).join("")}
-  </div>
-`;
-
-document.getElementById("geniusContent").innerHTML = geniusHtml;
+  let geniusHtml = `<p>Overall Score: <span class="score">${data.genius.overall_score}</span></p>
+    <div class="bar"><div class="bar-fill" style="width:${data.genius.overall_score}%"></div></div>
+    <p>Is Genius: ${data.genius.is_genius ? "Yes" : "No"}</p>
+    <p>Confidence: ${data.genius.confidence}</p>`;
+  geniusHtml += "<h4>Category Scores</h4><table>";
+  for (let cat in data.genius.categories) {
+    if (cat === "explanation") continue;
+    geniusHtml += `<tr><th>${cat}</th><td><div class="bar"><div class="bar-fill" style="width:${data.genius.categories[cat]}%"></div></div>${data.genius.categories[cat]}</td></tr>`;
+  }
+  geniusHtml += "</table><h4>Explanation</h4>";
+  geniusHtml += "<b>Positive:</b> " + (data.genius.categories.explanation?.positive_contributors.join(", ") || "None") + "<br>";
+  geniusHtml += "<b>Negative:</b> " + (data.genius.categories.explanation?.negative_contributors.join(", ") || "None");
+  document.getElementById("geniusContent").innerHTML = geniusHtml;
 
   document.getElementById("basicStatsContent").innerHTML = renderTable(data.basic_stats || {});
   

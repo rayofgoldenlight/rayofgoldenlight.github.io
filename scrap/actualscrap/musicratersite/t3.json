@@ -19,7 +19,6 @@
   "features": {
     "tempo_bpm": 109.96,
     "key": "D min",
-    "chord_progression": null,
     "spectral": {
       "centroid": 361.65,
       "rolloff": 451.44,
@@ -119,4 +118,3 @@
     }
   }
 }
-
