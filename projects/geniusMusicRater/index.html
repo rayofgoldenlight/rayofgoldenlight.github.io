@@ -1,99 +1,661 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Song Analyzer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f5f5f5;
-      color: #222;
-    }
-    header {
-      background: #333;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    .tabs {
-      display: flex;
-      background: #444;
-      overflow-x: auto;
-    }
-    .tab {
-      flex: 1;
-      padding: 1rem;
-      text-align: center;
-      cursor: pointer;
-      color: white;
-    }
-    .tab.active {
-      background: #222;
-    }
-    .content {
-      padding: 1.5rem;
-      max-height: calc(100vh - 140px);
-      overflow-y: auto;
-    }
-    audio {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-    pre {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Genius Rater — Underground UI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rubik:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0b0b0b;
+    --panel:#0f1113;
+    --neon:#00ffe1;
+    --accent:#ff2d95;
+    --muted:#9aa3a8;
+    --glass: rgba(255,255,255,0.03);
+  }
+  html,body{height:100%;margin:0;background:
+    radial-gradient(1200px 600px at 10% 20%, rgba(0,255,225,0.03), transparent 5%),
+    radial-gradient(900px 500px at 90% 80%, rgba(255,45,149,0.03), transparent 5%),
+    var(--bg);
+    color:#e7eef2;
+    font-family:Rubik,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* container */
+  .app{
+    display:grid;
+    grid-template-columns: 420px 1fr 360px;
+    gap:20px;
+    padding:28px;
+    height:100%;
+    box-sizing:border-box;
+  }
+
+  /* left panel */
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+    border:1px solid rgba(255,255,255,0.03);
+    border-radius:14px;
+    padding:16px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+    position:relative;
+    overflow:hidden;
+  }
+  .title{
+    display:flex;align-items:center;gap:12px;margin-bottom:12px;
+  }
+  .logo{
+    width:48px;height:48px;border-radius:8px;
+    background:linear-gradient(135deg,var(--neon),var(--accent));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    font-family: 'Share Tech Mono', monospace;color:#070707;font-weight:700;
+  }
+  .title h1{font-size:16px;margin:0}
+  .title p{font-size:12px;margin:0;color:var(--muted)}
+
+  textarea#jsonInput{
+    width:100%;height:260px;background:linear-gradient(180deg,#060606,#0b0b0b);
+    border:1px dashed rgba(255,255,255,0.04);color:#dfeff3;padding:12px;border-radius:8px;
+    font-family: 'Share Tech Mono', monospace;font-size:13px;resize:vertical;
+  }
+
+  .controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .btn{
+    background:var(--glass);border:1px solid rgba(255,255,255,0.03);
+    padding:8px 10px;border-radius:8px;color:var(--neon);cursor:pointer;font-weight:600;font-size:13px;
+    transition:transform .12s ease;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn.secondary{color:var(--muted);border-style:solid;opacity:0.9}
+  .btn.ghost{background:transparent;color:var(--muted);border:1px dashed rgba(255,255,255,0.03)}
+
+  .dropzone{
+    margin-top:12px;padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03);
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    color:var(--muted);font-size:13px;text-align:center;
+  }
+
+  /* center content */
+  .main{
+    display:flex;flex-direction:column;gap:16px;
+  }
+  .hero{
+    padding:18px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .song-info{display:flex;gap:14px;align-items:center}
+  .art{
+    width:96px;height:96px;border-radius:12px;background:linear-gradient(180deg,#071014,#111217);
+    box-shadow:inset 0 0 40px rgba(0,0,0,0.6);
+    display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono';font-size:14px;color:var(--muted);
+  }
+  .meta h2{margin:0;font-size:18px}
+  .meta p{margin:2px 0;color:var(--muted);font-size:13px}
+
+  /* genius card */
+  .genius{
+    display:flex;gap:18px;align-items:center;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .score{
+    width:110px;height:110px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+    font-family:'Share Tech Mono';
+  }
+  .score .big{font-size:34px;font-weight:700}
+  .verdict{font-size:12px;color:var(--muted);margin-top:6px}
+
+  .radarWrap{flex:1;height:140px}
+  canvas{max-width:100%;}
+
+  /* right sidebar */
+  .sidebar{display:flex;flex-direction:column;gap:12px}
+  .panel h3{margin:0 0 8px 0;font-size:14px}
+  .jsonView{
+    font-family:'Share Tech Mono';font-size:12px;background:#050505;padding:12px;border-radius:8px;height:320px;overflow:auto;color:#cfeef8;
+  }
+  .timeline{
+    height:180px;background:linear-gradient(90deg, rgba(255,255,255,0.01), transparent);
+    border-radius:8px;padding:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)
+  }
+
+  .footer{
+    font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;padding-top:8px;
+  }
+
+  /* grain overlay & cassette corner */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+    background-size:3px 3px;opacity:0.7;
+  }
+  .cassette{
+    position:absolute;right:-40px;top:-40px;width:180px;height:180px;transform:rotate(20deg);opacity:0.08;
+    background:linear-gradient(135deg,#000,#1a1a1a);border-radius:14px;box-shadow:inset 0 0 80px rgba(0,0,0,0.8);
+  }
+
+  /* responsive */
+  @media (max-width:1100px){
+    .app{grid-template-columns: 1fr; padding:16px;}
+    .panel{order:1}
+    .main{order:2}
+    .sidebar{order:3}
+  }
+
+  /* small helpers */
+  .muted{color:var(--muted); font-size:13px}
+  .chip{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);font-size:12px}
+  .small{font-size:12px}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Song Analyzer</h1>
-  </header>
+<div class="app">
+  <div class="panel">
+    <div class="title">
+      <div class="logo">G⚡R</div>
+      <div>
+        <h1>Genius Rater — Crate UI</h1>
+        <p>Paste or drop your Genius Rater JSON. Designed for underground ears.</p>
+      </div>
+    </div>
 
-  <div class="tabs" id="tabs"></div>
-  <div class="content">
-    <audio id="player" controls></audio>
-    <pre id="dataView"></pre>
+    <label for="jsonInput" class="muted small">JSON input</label>
+    <textarea id="jsonInput" placeholder='Paste your JSON here (or use the example buttons)'></textarea>
+
+    <div class="controls">
+      <button id="parseBtn" class="btn">Parse</button>
+      <button id="prettyBtn" class="btn secondary">Pretty-print</button>
+      <button id="downloadBtn" class="btn ghost">Export JSON</button>
+      <button id="loadExample1" class="btn">Load example 1</button>
+      <button id="loadExample2" class="btn">Load example 2</button>
+    </div>
+
+    <div class="dropzone" id="dropzone">Drop a `.json` file here or click to open file dialog</div>
+    <input id="fileInput" type="file" accept=".json,application/json" style="display:none">
+
+
+    <div class="cassette"></div>
   </div>
 
-  <script>
-    // Songs and their JSON data
-    const songs = [
-      { name: "In Love", file: "in_love.mp3", data: `test.json` },
-      { name: "Good Vibe", file: "good-vibe.mp3", data: `t2.json` },
-      { name: "Reafs", file: "reafs.mp3", data: `t3.json` },
-      { name: "Fell", file: "fell.mp3", data: `t4.json` }
-    ];
+  <div class="main">
+    <div class="hero panel">
+      <div class="song-info">
+        <div class="art" id="art">NO ART</div>
+        <div class="meta">
+          <h2 id="songTitle">No file loaded</h2>
+          <p id="songSub" class="muted">Load a JSON to see the rating summary</p>
+          <div style="margin-top:6px">
+            <span id="keyChip" class="chip">key —</span>
+            <span id="tempoChip" class="chip">tempo —</span>
+            <span id="durChip" class="chip">dur —</span>
+          </div>
+        </div>
+      </div>
 
-    const tabs = document.getElementById("tabs");
-    const player = document.getElementById("player");
-    const dataView = document.getElementById("dataView");
+      <div class="genius">
+        <div class="score">
+          <div class="big" id="overallScore">—</div>
+          <div class="verdict" id="verdict">no data</div>
+          <div class="muted small" id="confidence">confidence —</div>
+        </div>
 
-    // Create tab buttons
-    songs.forEach((song, i) => {
-      const tab = document.createElement("div");
-      tab.className = "tab" + (i === 0 ? " active" : "");
-      tab.textContent = song.name;
-      tab.onclick = () => showSong(i);
-      tabs.appendChild(tab);
-    });
+        <div class="radarWrap">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+    </div>
 
-    function showSong(index) {
-      document.querySelectorAll(".tab").forEach((t, i) =>
-        t.classList.toggle("active", i === index)
-      );
-      const song = songs[index];
-      player.src = song.file;
-      dataView.textContent = JSON.stringify(JSON.parse(song.data), null, 2);
+    <div class="panel" style="display:flex;gap:12px;flex-direction:column">
+      <h3>Chord timeline</h3>
+      <div class="timeline" id="timelineCanvasWrap">
+        <canvas id="timeline" height="120" style="width:100%;display:block;"></canvas>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+        <div class="muted small">Shows chord positions across the track (click to copy time)</div>
+        <div><button id="zoomOut" class="btn small secondary">Zoom out</button><button id="zoomIn" class="btn small">Zoom in</button></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Melody & Structure quickfacts</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <div class="small muted">Median F0<div id="medianF0">—</div></div>
+        <div class="small muted">Hook strength<div id="hook">—</div></div>
+        <div class="small muted">Section count<div id="sectCount">—</div></div>
+        <div class="small muted">Repetition ratio<div id="repro">—</div></div>
+      </div>
+
+      <hr style="border-color:rgba(255,255,255,0.02);margin:12px 0">
+
+      <h3>Raw JSON</h3>
+      <div class="jsonView" id="jsonView">No data loaded</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="panel">
+      <h3>Ratings & notes</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <div class="chip">Overall grade <strong id="overallGrade">—</strong></div>
+        <div class="chip">Creativity <strong id="creativity">—</strong></div>
+        <div class="chip">Progression <strong id="progressionQuality">—</strong></div>
+        <div class="chip">Pleasantness <strong id="pleasantness">—</strong></div>
+      </div>
+
+      <div style="margin-top:10px" class="muted">Explanation (positive / negative)</div>
+      <ul id="explain" style="margin-top:8px;color:#cfeef8"></ul>
+    </div>
+
+    <div class="panel">
+      <h3>Chords (scrollable)</h3>
+      <div id="chordList" style="height:220px;overflow:auto;font-family:'Share Tech Mono';font-size:12px;background:#050505;padding:8px;border-radius:8px"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Actions</h3>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="copySummary" class="btn">Copy summary</button>
+        <button id="copyJson" class="btn secondary">Copy prettified JSON</button>
+        <button id="clearBtn" class="btn ghost">Clear</button>
+      </div>
+
+      <div style="margin-top:12px" class="muted small">Shortcuts: Parse = Ctrl+Enter, Pretty = Ctrl+P</div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+(() => {
+  // DOM
+  const jsonInput = document.getElementById('jsonInput');
+  const parseBtn = document.getElementById('parseBtn');
+  const prettyBtn = document.getElementById('prettyBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const jsonView = document.getElementById('jsonView');
+  const songTitle = document.getElementById('songTitle');
+  const songSub = document.getElementById('songSub');
+  const art = document.getElementById('art');
+  const keyChip = document.getElementById('keyChip');
+  const tempoChip = document.getElementById('tempoChip');
+  const durChip = document.getElementById('durChip');
+  const overallScoreEl = document.getElementById('overallScore');
+  const verdictEl = document.getElementById('verdict');
+  const confidenceEl = document.getElementById('confidence');
+  const elapsedEl = document.getElementById('elapsed');
+  const medianF0 = document.getElementById('medianF0');
+  const hook = document.getElementById('hook');
+  const sectCount = document.getElementById('sectCount');
+  const repro = document.getElementById('repro');
+  const chordList = document.getElementById('chordList');
+  const explain = document.getElementById('explain');
+  const overallGrade = document.getElementById('overallGrade');
+  const creativity = document.getElementById('creativity');
+  const progressionQuality = document.getElementById('progressionQuality');
+  const pleasantness = document.getElementById('pleasantness');
+  const copySummary = document.getElementById('copySummary');
+  const copyJson = document.getElementById('copyJson');
+  const clearBtn = document.getElementById('clearBtn');
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const loadExample1 = document.getElementById('loadExample1');
+  const loadExample2 = document.getElementById('loadExample2');
+
+  let parsed = null;
+  let radarChart = null;
+  let timelineCanvas = document.getElementById('timeline');
+  let timelineCtx = timelineCanvas.getContext('2d');
+  let timelineZoom = 1;
+
+  // Example JSONs (minified string versions to avoid huge block duplication)
+  const ex1 = `{
+  "file":"like_me.mp3","original":{"sample_rate":48000,"channels":2,"frames":5761152},
+  "analysis_basis":{"resampled_sample_rate":44100,"mono_frames":5293058},
+  "basic_stats":{"duration_seconds":120.023991,"rms":0.098139,"peak":0.548729,"dc_offset":0.000273,"zero_crossings_per_second":2369.734566},
+  "features":{"tempo_bpm":87.59,"key":"A min","chord_progression":null,"spectral":{"centroid":672.39,"rolloff":1096.79,"brightness":0.0975,"mfcc":[8.2119,35.1156,-6.1186,20.7627,-4.949,12.0378,-1.2229,5.7869,-2.1333,6.4093,-3.7996,3.6814,-2.771]}},
+  "psychoacoustics":{"roughness":0.334018,"dissonance":0.393001,"loudness_lu":-20.85,"dynamic_range_db":20.2},
+  "ratings":{"harmonic_quality":90,"progression_quality":99,"pleasantness":32,"creativity":72,"overall_grade":73,"rating_profile":"pop"},
+  "rhythm":{"tempo_bpm":44.17,"tempo_confidence":0.07,"beat_strength":0.0098,"pulse_clarity":0.5081,"syncopation":0.4919,"swing_ratio":1.18},
+  "harmony":{"global_key":"D","key_stability":0.931,"modulation_count":7.0,"harmonic_motion":0.69,"tension":0.179,"chords":[{"time_sec":0.0,"name":"Em"},{"time_sec":0.93,"name":"D"},{"time_sec":1.86,"name":"D"}]},
+  "melody":{"median_f0":293.98,"mean_f0":255.38,"f0_confidence":0.065,"pitch_range_semitones":30,"contour_count":91,"avg_contour_length_sec":0.086,"longest_contour_sec":0.151,"avg_interval_semitones":-0.096,"avg_abs_interval_semitones":0.137,"melodic_entropy":0.267,"motif_repetition_rate":0.863,"motif_count":92,"hook_strength":0.013},
+  "structure":{"section_count":5,"arc_complexity":0.928,"repetition_ratio":0.717,"section_durations":[22.5,32.5,31,29,5.02],"duration_ratio":6.47,"section_labels_summary":{"intro":1,"verse":1,"chorus":1,"bridge":1,"outro":1},"has_chorus":true,"structural_arcs":[0,0.187,0.458,0.717,0.958],"sections":[{"start_sec":0,"end_sec":22.5,"label":"intro"},{"start_sec":22.5,"end_sec":55,"label":"chorus"}]},
+  "production":{"loudness_db":-17.63,"dynamic_range_db":14.22,"stereo_width":0.121,"spectral_balance":0.957,"masking_index":0},
+  "genius":{"overall_score":37,"is_genius":false,"confidence":0.068,"categories":{"harmony":75,"progression":34,"melody":3,"rhythm":44,"structure":98,"timbre":30,"creativity":55,"originality_score":49,"complexity_score":58,"genre_distance_score":100,"emotion_score":34,"explanation":{"positive_contributors":[],"negative_contributors":["Technical penalties applied (7)","Weak production/timbre (score 30)","Unstable rhythm/pulse (score 44)"]}}}
+}`;
+
+  const ex2 = `{
+  "file":"reafs.mp3","original":{"sample_rate":48000,"channels":2,"frames":6953472},
+  "analysis_basis":{"resampled_sample_rate":44100,"mono_frames":6388502},
+  "basic_stats":{"duration_seconds":144.863991,"rms":0.215303,"peak":0.91023,"dc_offset":0.000374,"zero_crossings_per_second":1110.821254},
+  "features":{"tempo_bpm":109.96,"key":"D min","chord_progression":null,"spectral":{"centroid":361.65,"rolloff":451.44,"brightness":0.029,"mfcc":[-28.1764,49.6323,15.344,27.5781,0.3691,16.9739,-3.0501,6.2519,-4.2201,0.9469,-5.3221,-0.0863,-3.8379]}},
+  "psychoacoustics":{"roughness":0.209371,"dissonance":0.429899,"loudness_lu":-14,"dynamic_range_db":33.74},
+  "ratings":{"harmonic_quality":50,"progression_quality":55,"pleasantness":42,"creativity":100,"overall_grade":61,"rating_profile":"experimental"},
+  "rhythm":{"tempo_bpm":47.41,"tempo_confidence":0.0,"beat_strength":0.019,"pulse_clarity":0.4985,"syncopation":0.5015,"swing_ratio":1.0},
+  "harmony":{"global_key":"G#m","key_stability":0.926,"modulation_count":12.0,"harmonic_motion":0.748,"tension":0.405,"chords":[{"time_sec":0.0,"name":"E"},{"time_sec":0.93,"name":"Em"},{"time_sec":1.86,"name":"F#"}]},
+  "melody":{"median_f0":115.72,"mean_f0":126.91,"f0_confidence":0.454,"pitch_range_semitones":30,"contour_count":590,"avg_contour_length_sec":0.111,"longest_contour_sec":2.74,"avg_interval_semitones":-0.044,"avg_abs_interval_semitones":0.192,"melodic_entropy":0.533,"motif_repetition_rate":0.871,"motif_count":731,"hook_strength":0.024},
+  "structure":{"section_count":6,"arc_complexity":0.991,"repetition_ratio":0.937,"section_durations":[33,20.5,20.5,26.5,20.5,23.86],"duration_ratio":1.61,"section_labels_summary":{"intro":1,"verse":3,"chorus":0,"bridge":1,"outro":1},"has_chorus":false,"structural_arcs":[0,0.228,0.369,0.511,0.694,0.835],"sections":[{"start_sec":0,"end_sec":33,"label":"intro"},{"start_sec":33,"end_sec":53.5,"label":"verse"}]},
+  "production":{"loudness_db":-12.51,"dynamic_range_db":12.65,"stereo_width":0.657,"spectral_balance":0.889,"masking_index":0.1},
+  "genius":{"overall_score":46,"is_genius":false,"confidence":0.227,"categories":{"harmony":100,"progression":37,"melody":13,"rhythm":50,"structure":65,"timbre":54,"creativity":54,"originality_score":53,"complexity_score":62,"genre_distance_score":80,"emotion_score":48,"explanation":{"positive_contributors":[],"negative_contributors":["Technical penalties applied (7)","Weak production/timbre (score 54)","Unstable rhythm/pulse (score 50)"]}}}
+}`;
+
+  // helpers
+  function setElapsed(s){ elapsedEl.textContent = s; }
+  function prettyPrint(json) {
+    try {
+      return JSON.stringify(JSON.parse(json), null, 2);
+    } catch(e){
+      return null;
+    }
+  }
+
+  function safeGet(obj, path, fallback='—'){
+    try{
+      return path.split('.').reduce((a,b)=>a && a[b], obj) ?? fallback;
+    }catch(e){return fallback}
+  }
+
+  // parse & render
+  function parseAndRender(rawText){
+    setElapsed('parsing…');
+    let obj;
+    try {
+      obj = JSON.parse(rawText);
+    } catch (e) {
+      alert('Invalid JSON — check syntax.');
+      setElapsed('invalid JSON');
+      return;
+    }
+    parsed = obj;
+    renderAll();
+    setElapsed('done');
+  }
+
+  function renderAll(){
+    if(!parsed) return;
+    // raw view
+    jsonView.textContent = JSON.stringify(parsed, null, 2);
+
+    // top meta
+    songTitle.textContent = parsed.file || 'unknown file';
+    songSub.textContent = `sample ${safeGet(parsed,'original.sample_rate')} Hz • ${safeGet(parsed,'original.channels')} ch`;
+    art.textContent = parsed.file ? parsed.file.split('.')[0].toUpperCase() : 'NO ART';
+    keyChip.textContent = `key ${safeGet(parsed,'features.key','—')}`;
+    tempoChip.textContent = `tempo ${safeGet(parsed,'features.tempo_bpm','—')} bpm`;
+    durChip.textContent = `dur ${safeGet(parsed,'basic_stats.duration_seconds','—')}s`;
+
+    // genius
+    const overall = safeGet(parsed,'genius.overall_score','—');
+    overallScoreEl.textContent = overall;
+    const isGenius = safeGet(parsed,'genius.is_genius',false);
+    verdictEl.textContent = isGenius === true || isGenius === 'true' ? 'GENIUS' : 'not genius';
+    confidenceEl.textContent = `conf ${safeGet(parsed,'genius.confidence','—')}`;
+
+    // cards
+    overallGrade.textContent = safeGet(parsed,'ratings.overall_grade','—');
+    creativity.textContent = safeGet(parsed,'ratings.creativity','—');
+    progressionQuality.textContent = safeGet(parsed,'ratings.progression_quality','—');
+    pleasantness.textContent = safeGet(parsed,'ratings.pleasantness','—');
+
+    // explanation
+    explain.innerHTML = '';
+    const neg = safeGet(parsed,'genius.categories.explanation.negative_contributors',[]);
+    const pos = safeGet(parsed,'genius.categories.explanation.positive_contributors',[]);
+    if(Array.isArray(pos) && pos.length){
+      pos.forEach(p => { const li=document.createElement('li'); li.textContent = `+ ${p}`; explain.appendChild(li)});
+    }
+    if(Array.isArray(neg) && neg.length){
+      neg.forEach(p => { const li=document.createElement('li'); li.textContent = `- ${p}`; explain.appendChild(li)});
+    }
+    if(!pos.length && !neg.length){
+      const li = document.createElement('li'); li.textContent = 'No explanation details'; li.className='muted'; explain.appendChild(li);
     }
 
-    // Show first song on load
-    showSong(0);
-  </script>
+    // melody / structure
+    medianF0.textContent = safeGet(parsed,'melody.median_f0','—');
+    hook.textContent = safeGet(parsed,'melody.hook_strength','—');
+    sectCount.textContent = safeGet(parsed,'structure.section_count','—');
+    repro.textContent = safeGet(parsed,'structure.repetition_ratio','—');
+
+    // chord list
+    chordList.innerHTML = '';
+    const chords = safeGet(parsed,'harmony.chords',[]);
+    if(Array.isArray(chords) && chords.length){
+      chords.slice(0,1000).forEach((c,i)=>{
+        const row = document.createElement('div');
+        row.style.padding='4px 6px';
+        row.style.borderBottom='1px dashed rgba(255,255,255,0.02)';
+        row.style.cursor='pointer';
+        row.textContent = `${((c.time_sec ?? c.time) || 0).toFixed(2)}s — ${c.name ?? '-'}`;
+        row.onclick = () => { 
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(`${((c.time_sec ?? c.time) || 0).toFixed(2)}s`); 
+            row.style.background = 'rgba(255,255,255,0.02)'; 
+          }
+        };
+        chordList.appendChild(row);
+      });
+    } else chordList.textContent = 'no chords found';
+
+    // radar data for categories
+    const categories = parsed.genius?.categories || {};
+    // pick these keys (if present)
+    const radarLabels = ['harmony','progression','melody','rhythm','structure','timbre','creativity'];
+    const radarValues = radarLabels.map(k => {
+      const v = categories[k];
+      return (typeof v === 'number') ? v : 0;
+    });
+
+    renderRadar(radarLabels, radarValues);
+    drawTimeline(chords, parsed.basic_stats?.duration_seconds || 120);
+
+  }
+
+  // Radar using Chart.js
+  function renderRadar(labels, values){
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    if(radarChart) radarChart.destroy();
+    radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'genius categories',
+          data: values,
+          fill: true,
+          tension: 0.3,
+          backgroundColor: 'rgba(0,255,225,0.06)',
+          borderColor: 'rgba(0,255,225,0.9)',
+          pointBackgroundColor: 'rgba(255,45,149,0.9)'
+        }]
+      },
+      options: {
+        plugins:{legend:{display:false}},
+        scales:{
+          r:{
+            beginAtZero:true,
+            max:100,
+            grid:{color:'rgba(255,255,255,0.02)'},
+            angleLines:{color:'rgba(255,255,255,0.02)'},
+            pointLabels:{color:'#cfeef8'}
+          }
+        },
+        maintainAspectRatio: false
+      }
+    });
+  }
+
+  // timeline draw
+  function drawTimeline(chords = [], duration = 120){
+    const canvas = timelineCanvas;
+    const ctx = timelineCtx;
+    const DPR = window.devicePixelRatio || 1;
+    const width = canvas.clientWidth;
+    const height = canvas.height;
+    canvas.width = Math.max(600, Math.floor(width * DPR));
+    canvas.height = Math.floor(height * DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    // clear
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // background
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0,0,width,height);
+
+    // axis & grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.fillStyle = '#bfeff8';
+    ctx.lineWidth = 1;
+    ctx.font = '12px "Share Tech Mono"';
+
+    // scaled timeline with zoom
+    const viewDur = duration / timelineZoom;
+    const scale = width / viewDur;
+    const offsetSec = 0; // could implement pan later
+    // draw chords as boxes
+    const h = height - 20;
+    chords.slice(0,2000).forEach((c,i)=>{
+      const t = ((c.time_sec ?? c.time) || 0) - offsetSec;
+      if(t < 0 || t > viewDur) return;
+      const x = t * scale;
+      const w = Math.max(6, 8); // fixed width for visualization
+      ctx.fillStyle = `rgba(${(i*37)%255},${(120+i*11)%255},${(200+i*7)%255},0.16)`;
+      ctx.fillRect(x, 12, w, h - 24);
+      // label occasionally
+      if(i % 8 === 0){
+        ctx.fillStyle = 'rgba(255,255,255,0.65)';
+        ctx.fillText((c.name||'-') , x+2, height - 6);
+      }
+    });
+
+    // bottom time markers
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.beginPath();
+    for(let s = 0; s <= viewDur; s += Math.max(1, Math.floor(viewDur/10))){
+      const x = s * scale;
+      ctx.moveTo(x, height-18);
+      ctx.lineTo(x, height-12);
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.fillRect(x, height-18, 1, 1);
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText(`${s.toFixed(0)}s`, x+3, height-2);
+    }
+    ctx.stroke();
+
+    // interactions: click to copy nearest chord time
+    canvas.onclick = function(e){
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left);
+      const sec = (x / scale) + offsetSec;
+      // find nearest chord
+      if(chords && chords.length){
+        let nearest = chords.reduce((best,c)=>{
+          const dt = Math.abs(((c.time_sec ?? c.time) || 0) - sec);
+          return (dt < best.dt) ? {c,dt} : best;
+        }, {c:chords[0],dt:Infinity});
+        const text = `${(((nearest.c.time_sec ?? nearest.c.time) || 0)).toFixed(2)}s`;
+        navigator.clipboard && navigator.clipboard.writeText(text);
+        setElapsed(`copied ${text}`);
+        setTimeout(()=>setElapsed(''),1200);
+      }
+    }
+  }
+
+  // events
+  parseBtn.onclick = ()=> parseAndRender(jsonInput.value || jsonInput.placeholder || '');
+  prettyBtn.onclick = ()=>{
+    const p = prettyPrint(jsonInput.value);
+    if(!p){ alert('Invalid JSON — cannot pretty print'); return; }
+    jsonInput.value = p;
+    setElapsed('pretty-printed');
+  };
+
+  downloadBtn.onclick = ()=>{
+    if(!parsed){ alert('No parsed JSON to export'); return; }
+    const blob = new Blob([JSON.stringify(parsed, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = (parsed.file || 'genius') + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  // copy helpers
+  copyJson.onclick = ()=> {
+    if(!parsed) return alert('No JSON loaded');
+    navigator.clipboard.writeText(JSON.stringify(parsed, null, 2));
+    setElapsed('json copied');
+  };
+  copySummary.onclick = ()=> {
+    if(!parsed) return alert('No JSON loaded');
+    const summary = [
+      `file: ${parsed.file || '—'}`,
+      `overall score: ${parsed.genius?.overall_score ?? '—'} (${parsed.genius?.is_genius ? 'GENIUS' : 'not genius'})`,
+      `confidence: ${parsed.genius?.confidence ?? '—'}`,
+      `top categories: harmony:${parsed.genius?.categories?.harmony ?? '—'}, melody:${parsed.genius?.categories?.melody ?? '—'}, structure:${parsed.genius?.categories?.structure ?? '—'}`
+    ].join('\\n');
+    navigator.clipboard.writeText(summary);
+    setElapsed('summary copied');
+  };
+
+  clearBtn.onclick = ()=>{
+    parsed = null;
+    jsonInput.value = '';
+    jsonView.textContent = 'No data loaded';
+    songTitle.textContent = 'No file loaded';
+    overallScoreEl.textContent = '—';
+    verdictEl.textContent = 'no data';
+    confidenceEl.textContent = 'confidence —';
+    chordList.textContent = '';
+    explain.innerHTML = '';
+    setElapsed('cleared');
+  };
+
+  // file drop
+  dropzone.addEventListener('click', ()=> fileInput.click());
+  dropzone.ondragover = (e)=>{ e.preventDefault(); dropzone.style.borderColor='rgba(255,255,255,0.08)'; }
+  dropzone.ondragleave = (e)=>{ dropzone.style.borderColor='rgba(255,255,255,0.03)'; }
+  dropzone.ondrop = (e)=>{ e.preventDefault(); dropzone.style.borderColor='rgba(255,255,255,0.03)'; const f = e.dataTransfer.files[0]; handleFile(f); }
+  fileInput.onchange = (e)=> handleFile(e.target.files[0]);
+
+  function handleFile(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=> {
+      jsonInput.value = reader.result;
+      parseAndRender(reader.result);
+    };
+    reader.readAsText(file);
+  }
+
+  // example loaders
+  loadExample1.onclick = ()=> { jsonInput.value = ex1; parseAndRender(ex1); }
+  loadExample2.onclick = ()=> { jsonInput.value = ex2; parseAndRender(ex2); }
+
+  // keyboard shortcuts
+  document.addEventListener('keydown', (e)=>{
+    if(e.ctrlKey && e.key === 'Enter'){ parseBtn.click(); e.preventDefault() }
+    if(e.ctrlKey && (e.key === 'p' || e.key === 'P')){ prettyBtn.click(); e.preventDefault() }
+  });
+
+  // zoom controls
+  document.getElementById('zoomIn').onclick = ()=> { timelineZoom = Math.min(timelineZoom*1.5, 16); drawTimeline(parsed?.harmony?.chords || [], parsed?.basic_stats?.duration_seconds || 120); }
+  document.getElementById('zoomOut').onclick = ()=> { timelineZoom = Math.max(timelineZoom/1.5, 0.5); drawTimeline(parsed?.harmony?.chords || [], parsed?.basic_stats?.duration_seconds || 120); }
+
+  // small initial load: show example 1
+  jsonInput.value = ex1;
+  parseAndRender(ex1);
+
+})();
+</script>
 </body>
 </html>
