@@ -1,7 +1,7 @@
 Hey!
 
 Download mp3_analyzer.exe
-This is the Genius Music Rater.
+This is the Genius Music Detector.
 
 Usage: mp3_analyzer.exe  [genre] [--m(elody)] [--s(tructure)] [--g(enius)]
 Genres: rap, vgm, pop, experimental, phonk, default
