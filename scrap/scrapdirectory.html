@@ -5,125 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project: Rakkhun</title>
   <style>
+    :root {
+      --color-bg: #000;          /* Black background */
+      --color-text: #f5f5f5;     /* Light text */
+      --color-gold: #d4af37;     /* Gold */
+      --color-blue: #0077ff;     /* Blue */
+
+      --font-size-base: clamp(0.9rem, 1vw + 0.6rem, 1rem);
+      --font-size-md: clamp(1.1rem, 1.5vw + 0.7rem, 1.4rem);
+      --font-size-lg: clamp(1.8rem, 3vw + 0.8rem, 2.4rem);
+
+      --space-sm: 0.4rem;
+      --space-md: 0.8rem;
+      --space-lg: 1.5rem;
+
+      --radius: 0.5rem;
+    }
+
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #2e2e45);
-      color: #f0f0f0;
+      font-family: system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
-      padding: 2rem;
+      padding: var(--space-lg);
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 800px;
       width: 100%;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-      color: #fff;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--color-blue);
+      padding-bottom: var(--space-md);
+    }
+
+    header h1 {
+      font-size: var(--font-size-lg);
+      color: var(--color-gold);
+      margin: 0;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: var(--space-sm);
+      font-size: var(--font-size-base);
+      color: var(--color-blue);
+    }
+
+    .breadcrumb span {
+      cursor: pointer;
+    }
+
+    .breadcrumb .sep {
+      color: var(--color-text);
+      opacity: 0.5;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      border: 1px solid var(--color-gold);
+      border-radius: var(--radius);
+      padding: var(--space-md);
+      text-align: left;
+      transition: background 0.2s ease;
       cursor: pointer;
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 180deg at 50% 50%, #00f5ff, #ff00aa, #00f5ff);
-      transform: rotate(0deg);
-      animation: spin 6s linear infinite;
-      z-index: 0;
-      opacity: 0.15;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .card-content {
-      position: relative;
-      z-index: 1;
+    .card:hover {
+      background: rgba(212,175,55,0.1);
     }
 
     .card h2 {
-      margin: 0;
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
+      margin: 0 0 var(--space-sm) 0;
+      font-size: var(--font-size-md);
+      color: var(--color-gold);
     }
 
     .card p {
       margin: 0;
-      font-size: 0.9rem;
-      opacity: 0.8;
+      font-size: var(--font-size-base);
+      color: var(--color-blue);
+      opacity: 0.9;
     }
 
     .back-btn {
       display: inline-block;
-      margin-bottom: 1.5rem;
-      padding: 0.6rem 1.2rem;
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #fff;
-      background: linear-gradient(135deg, #ff00aa, #00f5ff);
-      border-radius: 0.5rem;
-      text-decoration: none;
+      margin-bottom: var(--space-lg);
+      padding: 0.4rem 0.8rem;
+      font-size: var(--font-size-base);
+      border: 1px solid var(--color-blue);
+      border-radius: var(--radius);
+      color: var(--color-blue);
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .back-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      background: rgba(0,119,255,0.1);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Scratch Work  Directory</h1>
+    <header>
+      <h1>Scratch Work</h1>
+      <nav class="breadcrumb" id="breadcrumb"></nav>
+    </header>
     <div id="nav"></div>
     <div class="grid" id="projectsGrid"></div>
   </div>
 
   <script>
-
     const PROJECTS = [
       {id:'p-00000',relpath:'../index.html'},
       {id:'p-00001',relpath:'portfolio/yanko_directoryfromthefuture.html'},
       {id:'p-00002',relpath:'portfolio/projectboxundertale.html'},
-      {id:'p-00003',relpath:'portfolio/imgscrap.py'},
-      {id:'p-00004',relpath:'projects/tsgraphcalc/index.html'},
     ];
 
-    // Build a nested folder structure
     function buildTree(projects) {
       const tree = {};
       projects.forEach(p => {
@@ -131,10 +142,8 @@
         let current = tree;
         parts.forEach((part, i) => {
           if (i === parts.length - 1) {
-            // File
             current[part] = { ...p, type: 'file' };
           } else {
-            // Folder
             if (!current[part]) current[part] = { type: 'folder', children: {} };
             current = current[part].children;
           }
@@ -145,7 +154,6 @@
 
     const tree = buildTree(PROJECTS);
     let currentPath = [];
-
     const grid = document.getElementById('projectsGrid');
     const nav = document.getElementById('nav');
 
@@ -153,19 +161,18 @@
       grid.innerHTML = '';
       nav.innerHTML = '';
 
-      // Show back button if not root
       if (path.length > 0) {
         const back = document.createElement('div');
         back.className = 'back-btn';
-        back.textContent = '⬅ Back';
+        back.textContent = '← Back';
         back.onclick = () => {
           currentPath.pop();
           render(currentPath);
+          renderBreadcrumb(currentPath);
         };
         nav.appendChild(back);
       }
 
-      // Navigate tree
       let node = tree;
       for (const p of path) {
         node = node[p].children;
@@ -175,38 +182,61 @@
         const card = document.createElement('div');
         card.className = 'card';
 
-        const content = document.createElement('div');
-        content.className = 'card-content';
-
         const title = document.createElement('h2');
         title.textContent = name;
-        content.appendChild(title);
+
+        const desc = document.createElement('p');
+        desc.textContent = value.type === 'folder' ? 'Folder' : value.id;
+
+        card.appendChild(title);
+        card.appendChild(desc);
 
         if (value.type === 'folder') {
-          const desc = document.createElement('p');
-          desc.textContent = 'Folder';
-          content.appendChild(desc);
-
           card.onclick = () => {
             currentPath.push(name);
             render(currentPath);
+            renderBreadcrumb(currentPath);
           };
         } else {
-          const desc = document.createElement('p');
-          desc.textContent = value.id;
-          content.appendChild(desc);
-
-          card.onclick = () => {
-            window.open(value.relpath, '_blank');
-          };
+          card.onclick = () => window.open(value.relpath, '_blank');
         }
 
-        card.appendChild(content);
         grid.appendChild(card);
       });
     }
 
+    function renderBreadcrumb(path) {
+      const breadcrumb = document.getElementById('breadcrumb');
+      breadcrumb.innerHTML = '';
+
+      const root = document.createElement('span');
+      root.textContent = 'Home';
+      root.onclick = () => {
+        currentPath = [];
+        render(currentPath);
+        renderBreadcrumb(currentPath);
+      };
+      breadcrumb.appendChild(root);
+
+      path.forEach((p, i) => {
+        const sep = document.createElement('span');
+        sep.textContent = '›';
+        sep.className = 'sep';
+        breadcrumb.appendChild(sep);
+
+        const crumb = document.createElement('span');
+        crumb.textContent = p;
+        crumb.onclick = () => {
+          currentPath = path.slice(0, i + 1);
+          render(currentPath);
+          renderBreadcrumb(currentPath);
+        };
+        breadcrumb.appendChild(crumb);
+      });
+    }
+
     render(currentPath);
+    renderBreadcrumb(currentPath);
   </script>
 </body>
 </html>
