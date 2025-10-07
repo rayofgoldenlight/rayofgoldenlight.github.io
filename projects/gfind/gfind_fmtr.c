@@ -5,6 +5,9 @@
 
 #define LINE_SIZE 1024
 
+//NOTE IF YOU MODIFY: you may compile the program with the following: gcc -o gfind_fmtr.c gfind_fmtr.exe
+//If using Windows, you may need to install MSYS2 MINGW64 and compile in that terminal, or etc. depending on your situation
+
 // trim leading/trailing whitespace
 char *trim(char *str) {
     char *end;

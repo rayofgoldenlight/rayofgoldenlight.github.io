@@ -4,6 +4,8 @@
 #include <curl/curl.h>
 #include <time.h>   // for clock_gettime
 
+//NOTE IF YOU MODIFY: you may compile the program with the following: gcc gfind.c -o gfind.exe -lcurl
+//If using Windows, you may need to install MSYS2 MINGW64 and compile in that terminal, or etc. depending on your situation
 
 // Ignore response body
 size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdata) {
@@ -17,7 +19,7 @@ typedef struct {
 
 char* make_course_url(int course_num) {
     char buffer[256];
-    snprintf(buffer, sizeof(buffer), "https://sites.google.com/view/%d", course_num);
+    snprintf(buffer, sizeof(buffer), "https://sites.google.com/view/%d", course_num); //[[[MODIFY]]] -- this can be modified for your link of choice, %d represents the numbers you are testing
     return strdup(buffer); // malloc copy to persist
 }
 
@@ -144,8 +146,8 @@ void process_block(int start, int end, int delay_seconds, int show_title) {
             if (num_redirects == 0 &&
                 strcmp(orig_norm, final_norm) == 0 &&
                 title &&
-                strcasecmp(title, "Page Not Found") != 0 &&
-                strcasecmp(title, "Error 404 (Not Found)!!1") != 0) {
+                strcasecmp(title, "Page Not Found") != 0 && // [[[MODIFY]]] "Page Not Found" and "Error 404 (Not Found)!!1" are the <title></title> data found non-redirected site. For google sites, these pages can be discarded as they are all the same. Modify these strings or remove them to help with your case scenario. 
+                strcasecmp(title, "Error 404 (Not Found)!!1") != 0) { 
 
                 if (show_title) {
                     printf("  [%s], %s\n", title, jobs[i].original_url);
