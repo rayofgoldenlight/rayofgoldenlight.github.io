@@ -1,6 +1,0 @@
-@fpf_HostAddress = http://localhost:5197
-
-GET {{fpf_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
