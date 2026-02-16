@@ -1,0 +1,246 @@
+/* ===== Reset & Base ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+::selection {
+    background: rgba(255, 105, 180, 0.35);
+    color: #fff;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Animated BG Canvas ===== */
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ===== Page Layout ===== */
+.page-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 30px 20px 0 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* ===== Header ===== */
+.header {
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.logo-mark {
+    width: 48px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #ff69b4, transparent);
+    margin: 0 auto 14px auto;
+    border-radius: 2px;
+}
+
+h1 {
+    font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+    font-weight: 300;
+    font-size: 2.2rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #ffffff 0%, #ff69b4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255, 105, 180, 0.5);
+    margin-top: 6px;
+}
+
+/* ===== Canvas Wrapper ===== */
+.canvas-wrapper {
+    position: relative;
+    border: 1px solid rgba(255, 105, 180, 0.15);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(10, 10, 10, 0.85);
+    box-shadow:
+        0 0 40px rgba(255, 105, 180, 0.06),
+        0 0 80px rgba(255, 105, 180, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(4px);
+}
+
+.canvas-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 105, 180, 0.4), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.canvas-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 30%;
+    right: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 105, 180, 0.2), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ===== Loading Canvas ===== */
+#loadingCanvas {
+    display: block;
+    border: 0 none;
+    border-radius: 12px;
+}
+
+/* ===== Game Canvas ===== */
+#canvas {
+    padding: 0;
+    display: block;
+    border: 0 none;
+    visibility: hidden;
+}
+
+/* ===== Footer ===== */
+footer {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    padding: 20px 0 16px 0;
+    margin-top: auto;
+}
+
+.footer-line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 105, 180, 0.3), transparent);
+    margin: 0 auto 12px auto;
+}
+
+footer p {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+footer .accent {
+    color: rgba(255, 105, 180, 0.45);
+    font-weight: 500;
+}
+
+/* ===== Links ===== */
+a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:link {
+    color: #ff69b4;
+}
+
+a:visited {
+    color: #cc5490;
+}
+
+a:hover {
+    color: #ffb6d9;
+}
+
+/* ===== Scrollbar (Webkit) ===== */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 105, 180, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 105, 180, 0.4);
+}
+
+.info-link {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.info-link a {
+    color: rgba(255, 105, 180, 0.5);
+    transition: color 0.2s ease;
+}
+
+.info-link a:hover {
+    color: #ff69b4;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5rem;
+        letter-spacing: 4px;
+    }
+
+    .subtitle {
+        font-size: 0.65rem;
+    }
+
+    .page-wrapper {
+        padding: 16px 10px 0 10px;
+    }
+
+    .canvas-wrapper {
+        border-radius: 8px;
+    }
+}

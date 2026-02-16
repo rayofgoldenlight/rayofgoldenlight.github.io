@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, maximum-scale=1">
+    <title>Project: Jirgin</title>
+    <link rel="stylesheet" type="text/css" href="theme/love.css">
+  </head>
+  <body>
+
+    <!-- Animated background lines -->
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="page-wrapper">
+      <div class="container">
+        <div class="header">
+          <div class="logo-mark"></div>
+          <h1>Railroad</h1>
+          <p class="subtitle">Project Task Manager</p>
+          <p class="info-link">
+              <a href="https://rayofgoldenlight.github.io/projects/railroad/index.html">
+                  More info →
+              </a>
+          </p>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="loadingCanvas" oncontextmenu="event.preventDefault()" width="800" height="600"></canvas>
+          <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+        </div>
+      </div>
+
+      <footer>
+        <div class="footer-line"></div>
+        <p>Made by <span class="accent">rayofgoldenlight</span></p>
+      </footer>
+    </div>
+
+    <script type='text/javascript'>
+      // ===== Animated background pink lines =====
+      (function() {
+        var bg = document.getElementById('bgCanvas');
+        var ctx = bg.getContext('2d');
+        var lines = [];
+        var lineCount = 18;
+        var mouse = { x: -1000, y: -1000 };
+
+        function resize() {
+          bg.width = window.innerWidth;
+          bg.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        document.addEventListener('mousemove', function(e) {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+
+        function rand(min, max) { return Math.random() * (max - min) + min; }
+
+        for (var i = 0; i < lineCount; i++) {
+          lines.push({
+            x1: rand(0, bg.width),
+            y1: rand(0, bg.height),
+            x2: rand(0, bg.width),
+            y2: rand(0, bg.height),
+            cp1x: rand(0, bg.width),
+            cp1y: rand(0, bg.height),
+            cp2x: rand(0, bg.width),
+            cp2y: rand(0, bg.height),
+            vx1: rand(-0.3, 0.3),
+            vy1: rand(-0.3, 0.3),
+            vx2: rand(-0.3, 0.3),
+            vy2: rand(-0.3, 0.3),
+            vcpx1: rand(-0.2, 0.2),
+            vcpy1: rand(-0.2, 0.2),
+            vcpx2: rand(-0.2, 0.2),
+            vcpy2: rand(-0.2, 0.2),
+            alpha: rand(0.04, 0.12),
+            width: rand(1, 2.5),
+            hue: rand(-10, 10)
+          });
+        }
+
+        function wrapCoord(val, max) {
+          if (val < -100) return max + 100;
+          if (val > max + 100) return -100;
+          return val;
+        }
+
+        function animate() {
+          ctx.clearRect(0, 0, bg.width, bg.height);
+
+          for (var i = 0; i < lines.length; i++) {
+            var l = lines[i];
+
+            l.x1 += l.vx1; l.y1 += l.vy1;
+            l.x2 += l.vx2; l.y2 += l.vy2;
+            l.cp1x += l.vcpx1; l.cp1y += l.vcpy1;
+            l.cp2x += l.vcpx2; l.cp2y += l.vcpy2;
+
+            l.x1 = wrapCoord(l.x1, bg.width);
+            l.y1 = wrapCoord(l.y1, bg.height);
+            l.x2 = wrapCoord(l.x2, bg.width);
+            l.y2 = wrapCoord(l.y2, bg.height);
+            l.cp1x = wrapCoord(l.cp1x, bg.width);
+            l.cp1y = wrapCoord(l.cp1y, bg.height);
+            l.cp2x = wrapCoord(l.cp2x, bg.width);
+            l.cp2y = wrapCoord(l.cp2y, bg.height);
+
+            // Subtle mouse repulsion on control points
+            var dx = l.cp1x - mouse.x;
+            var dy = l.cp1y - mouse.y;
+            var dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 200 && dist > 0) {
+              var force = (200 - dist) * 0.0003;
+              l.vcpx1 += dx * force;
+              l.vcpy1 += dy * force;
+            }
+
+            // Dampen velocities slightly
+            l.vx1 *= 0.9995; l.vy1 *= 0.9995;
+            l.vx2 *= 0.9995; l.vy2 *= 0.9995;
+            l.vcpx1 *= 0.9995; l.vcpy1 *= 0.9995;
+            l.vcpx2 *= 0.9995; l.vcpy2 *= 0.9995;
+
+            // Re-add tiny random drift so they never fully stop
+            l.vx1 += rand(-0.01, 0.01);
+            l.vy1 += rand(-0.01, 0.01);
+            l.vcpx1 += rand(-0.01, 0.01);
+            l.vcpy1 += rand(-0.01, 0.01);
+
+            ctx.beginPath();
+            ctx.moveTo(l.x1, l.y1);
+            ctx.bezierCurveTo(l.cp1x, l.cp1y, l.cp2x, l.cp2y, l.x2, l.y2);
+
+            var pink = 'hsla(' + (330 + l.hue) + ', 100%, 70%, ' + l.alpha + ')';
+            ctx.strokeStyle = pink;
+            ctx.lineWidth = l.width;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Glow layer
+            ctx.beginPath();
+            ctx.moveTo(l.x1, l.y1);
+            ctx.bezierCurveTo(l.cp1x, l.cp1y, l.cp2x, l.cp2y, l.x2, l.y2);
+            ctx.strokeStyle = 'hsla(' + (330 + l.hue) + ', 100%, 70%, ' + (l.alpha * 0.3) + ')';
+            ctx.lineWidth = l.width + 6;
+            ctx.stroke();
+          }
+
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+      })();
+
+      // ===== Love.js loader =====
+      function goFullScreen(){
+        var canvas = document.getElementById("canvas");
+        if(canvas.requestFullScreen)
+          canvas.requestFullScreen();
+        else if(canvas.webkitRequestFullScreen)
+          canvas.webkitRequestFullScreen();
+        else if(canvas.mozRequestFullScreen)
+          canvas.mozRequestFullScreen();
+      }
+
+      function FullScreenHook(){
+        var canvas = document.getElementById("canvas");
+        canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      }
+
+      var loadingContext = document.getElementById('loadingCanvas').getContext('2d');
+      function drawLoadingText(text) {
+        var canvas = loadingContext.canvas;
+
+        loadingContext.fillStyle = "#0a0a0a";
+        loadingContext.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
+
+        loadingContext.font = '1.4em "Segoe UI", Arial, sans-serif';
+        loadingContext.textAlign = 'center';
+
+        loadingContext.fillStyle = "rgba(255, 105, 180, 0.3)";
+        loadingContext.fillText("Powered by LÖVE", canvas.scrollWidth / 2, canvas.scrollHeight / 4);
+
+        loadingContext.fillStyle = "#ff69b4";
+        loadingContext.fillText(text, canvas.scrollWidth / 2, canvas.scrollHeight / 2);
+      }
+
+      window.onload = function () { window.focus(); };
+      window.onclick = function () { window.focus(); };
+
+      window.addEventListener("keydown", function(e) {
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+          e.preventDefault();
+        }
+      }, false);
+
+      var Module = {
+        arguments: ["./game.love"],
+        INITIAL_MEMORY: 70000000,
+        printErr: console.error.bind(console),
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+          canvas.addEventListener("webglcontextlost", function(e) {
+            alert('WebGL context lost. You will need to reload the page.');
+            e.preventDefault();
+          }, false);
+          return canvas;
+        })(),
+        setStatus: function(text) {
+          if (text) {
+            drawLoadingText(text);
+          } else if (Module.remainingDependencies === 0) {
+            document.getElementById('loadingCanvas').style.display = 'none';
+            document.getElementById('canvas').style.visibility = 'visible';
+          }
+        },
+        totalDependencies: 0,
+        remainingDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.remainingDependencies = left;
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+      window.onerror = function(event) {
+        Module.setStatus('Exception thrown, see JavaScript console');
+        Module.setStatus = function(text) {
+          if (text) Module.printErr('[post-exception status] ' + text);
+        };
+      };
+
+      var applicationLoad = function(e) {
+        Love(Module);
+      }
+    </script>
+    <script type="text/javascript" src="game.js"></script>
+    <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
+  </body>
+</html>
