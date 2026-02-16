@@ -27,12 +27,13 @@
               </a>
           </p>
         </div>
-
-        <div class="canvas-wrapper">
+      </div>
+      <center>
+      <div class="canvas-wrapper">
           <canvas id="loadingCanvas" oncontextmenu="event.preventDefault()" width="800" height="600"></canvas>
           <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
         </div>
-      </div>
+      </center>
 
       <footer>
         <div class="footer-line"></div>
@@ -197,20 +198,41 @@
       window.onload = function () { window.focus(); };
       window.onclick = function (e) {
           if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+              var c = document.getElementById('canvas');
+              if (c) c.focus();
               window.focus();
           }
       };
 
-      window.addEventListener("keydown", function(e) {
-        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+      var canvas = document.getElementById('canvas');
+
+      canvas.addEventListener('keydown', function(e) {
+        // Prevent browser default for keys LÖVE needs
+        var blocked = [
+          32,  // space
+          8,   // backspace
+          9,   // tab
+          37,  // left arrow
+          38,  // up arrow
+          39,  // right arrow
+          40   // down arrow
+        ];
+
+        if (blocked.indexOf(e.keyCode) !== -1) {
+          e.preventDefault();
+        }
+      }, false);
+
+      window.addEventListener('keydown', function(e) {
+        if (e.keyCode === 32 && e.target === canvas) {
           e.preventDefault();
         }
       }, false);
 
       var Module = {
         arguments: ["./game.love"],
-        INITIAL_MEMORY: 70000000,
-        printErr: console.error.bind(console),
+        INITIAL_MEMORY: 30000000,
+        printErr: console.error.bind(console),  
         canvas: (function() {
           var canvas = document.getElementById('canvas');
           canvas.addEventListener("webglcontextlost", function(e) {
@@ -224,7 +246,9 @@
             drawLoadingText(text);
           } else if (Module.remainingDependencies === 0) {
             document.getElementById('loadingCanvas').style.display = 'none';
-            document.getElementById('canvas').style.visibility = 'visible';
+            var c = document.getElementById('canvas');
+            c.style.visibility = 'visible';
+            c.focus();
           }
         },
         totalDependencies: 0,
