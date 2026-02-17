@@ -196,35 +196,12 @@
       }
 
       window.onload = function () { window.focus(); };
-      window.onclick = function (e) {
-          if (e.target.tagName !== 'A' && !e.target.closest('a')) {
-              var c = document.getElementById('canvas');
-              if (c) c.focus();
-              window.focus();
-          }
-      };
-
+      window.onclick = function () { window.focus(); };
       var canvas = document.getElementById('canvas');
 
-      canvas.addEventListener('keydown', function(e) {
-        // Prevent browser default for keys LÖVE needs
-        var blocked = [
-          32,  // space
-          8,   // backspace
-          9,   // tab
-          37,  // left arrow
-          38,  // up arrow
-          39,  // right arrow
-          40   // down arrow
-        ];
-
-        if (blocked.indexOf(e.keyCode) !== -1) {
-          e.preventDefault();
-        }
-      }, false);
-
-      window.addEventListener('keydown', function(e) {
-        if (e.keyCode === 32 && e.target === canvas) {
+      window.addEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
           e.preventDefault();
         }
       }, false);
@@ -235,10 +212,7 @@
         printErr: console.error.bind(console),  
         canvas: (function() {
           var canvas = document.getElementById('canvas');
-          canvas.addEventListener("webglcontextlost", function(e) {
-            alert('WebGL context lost. You will need to reload the page.');
-            e.preventDefault();
-          }, false);
+          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
           return canvas;
         })(),
         setStatus: function(text) {
@@ -246,9 +220,7 @@
             drawLoadingText(text);
           } else if (Module.remainingDependencies === 0) {
             document.getElementById('loadingCanvas').style.display = 'none';
-            var c = document.getElementById('canvas');
-            c.style.visibility = 'visible';
-            c.focus();
+            document.getElementById('canvas').style.visibility = 'visible';
           }
         },
         totalDependencies: 0,
@@ -272,6 +244,7 @@
       }
     </script>
     <script type="text/javascript" src="game.js"></script>
+    <script type="text/javascript" src="clipboard.js"></script>
     <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
   </body>
 </html>
