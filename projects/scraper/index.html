@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szikla</title>
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/WpBMQmVy/gl-ll.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #ffffff;
+            color: #2d5016;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        h1 {
+            color: #1a8b8b;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 3px solid #4ecdc4;
+            padding-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #4ecdc4;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature {
+            background: #f8fff8;
+            border: 2px solid #4ecdc4;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .feature h3 {
+            color: #1a8b8b;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .feature p {
+            color: #2d5016;
+            font-size: 0.9rem;
+        }
+
+        .usage {
+            background: #f0fff4;
+            border-left: 4px solid #4ecdc4;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .usage h3 {
+            color: #1a8b8b;
+            margin-bottom: 1rem;
+        }
+
+        .code {
+            background: #2d5016;
+            color: #4ecdc4;
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+
+        .github-link {
+            display: inline-block;
+            background: #4ecdc4;
+            color: #ffffff;
+            padding: 0.8rem 2rem;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 1rem auto;
+            display: block;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .github-link:hover {
+            background: #1a8b8b;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #4ecdc4;
+            border-top: 1px solid #4ecdc4;
+            margin-top: auto;
+        }
+
+        .highlight {
+            color: #1a8b8b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Szikla</h1>
+        <p class="subtitle">Fast Page Plaintext Scraper</p>
+
+        <div class="features">
+            <div class="feature">
+                <h3>Input</h3>
+                <p>A single link or a txt file in the same directory as scraper.exe with links on each newline. Include protocol: (https://, etc)</p>
+            </div>
+            <div class="feature">
+                <h3>Output</h3>
+                <p>Text files of plaintext for each site. Name of each text file is the url input.</p>
+            </div>
+        </div>
+
+        <div class="usage">
+            <h3>Usage</h3>
+            <p>Compile with <span class="highlight">gcc</span> in MSYS2 MINGW64:</p>
+            <div class="code">gcc -O2 -o scraper.exe scraper.c -lcurl -lpthread</div>
+            
+            <p>Run the scraper:</p>
+            <div class="code">./scraper https://example.com</div>
+            <div class="code">./scraper urls.txt</div>
+        </div>
+
+        <a href="https://github.com/rayofgoldenlight/tools/tree/main/projects/scraper" class="github-link" target="_blank">
+            View Source Code/.exe
+        </a>
+    </div>
+
+    <footer class="footer">
+        Made by <strong>rayofgoldenlight</strong>
+    </footer>
+
+    <script>
+        // Simple animation on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const features = document.querySelectorAll('.feature');
+            features.forEach((feature, index) => {
+                feature.style.opacity = '0';
+                feature.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    feature.style.transition = 'all 0.6s ease';
+                    feature.style.opacity = '1';
+                    feature.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+
+            // Hover effect for features
+            features.forEach(feature => {
+                feature.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.boxShadow = '0 8px 25px rgba(78, 205, 196, 0.3)';
+                });
+
+                feature.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
