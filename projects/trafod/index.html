@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trafod</title>
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/WpBMQmVy/gl-ll.png">
+    <style>
+        /* =========================================
+           THEME VARIABLES
+           ========================================= */
+        :root {
+            /* FROST MODE (Light) */
+            --bg-color: #a0b9d9;
+            --bg-gradient: radial-gradient(circle at center, #c2d6eb 0%, #7a9ac2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px rgba(13, 110, 253, 0.15);
+            --blur: blur(20px);
+            
+            /* Frost Text Effect */
+            --text-fill: #ffffff;
+            --text-shadow: 1px 1px 2px rgba(0,0,0,0.1), 0 0 8px rgba(255, 255, 255, 0.9);
+            --heading-grad: linear-gradient(135deg, #ffffff 0%, #e0f0ff 100%);
+            
+            /* Frost Waves */
+            --wave-border: rgba(255, 255, 255, 0.8);
+            --wave-glow: 0 0 30px 10px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(200, 225, 255, 0.5);
+
+            /* UI Elements */
+            --btn-bg: rgba(255, 255, 255, 0.2);
+            --btn-border: #ffffff;
+            --warn-bg: rgba(13, 110, 253, 0.15);
+            --warn-border: #0D6EFD;
+        }
+
+        [data-theme="dark"] {
+            /* LAVA MODE (Dark) */
+            --bg-color: #050101;
+            --bg-gradient: radial-gradient(circle at center, #1a0505 0%, #000000 100%);
+            --glass-bg: rgba(15, 2, 2, 0.75);
+            --glass-border: rgba(255, 60, 0, 0.3);
+            --glass-shadow: 0 15px 40px rgba(255, 20, 0, 0.2);
+            --blur: blur(12px); 
+            
+            /* Lava Text Effect */
+            --text-fill: #ffc2a6;
+            --text-shadow: 0 0 5px rgba(255, 50, 0, 0.6);
+            --heading-grad: linear-gradient(135deg, #ffea00 0%, #ff2a00 80%);
+            
+            /* Heat Waves */
+            --wave-border: rgba(255, 60, 0, 0.6);
+            --wave-glow: 0 0 40px 15px rgba(255, 30, 0, 0.5), inset 0 0 30px rgba(255, 100, 0, 0.3);
+
+            /* UI Elements */
+            --btn-bg: rgba(255, 60, 0, 0.1);
+            --btn-border: #ff2a00;
+            --warn-bg: rgba(255, 30, 0, 0.15);
+            --warn-border: #ff2a00;
+        }
+
+        /* =========================================
+           GLOBAL STYLES & LAYOUT
+           ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            background-color: var(--bg-color);
+            color: var(--text-fill);
+            text-shadow: var(--text-shadow);
+            line-height: 1.7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 3rem 2rem;
+            overflow-x: hidden;
+            transition: background 0.6s ease;
+        }
+
+        /* =========================================
+           WAVE ANIMATIONS
+           ========================================= */
+        #wave-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .wave {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--wave-border);
+            box-shadow: var(--wave-glow);
+            transform: translate3d(-50%, -50%, 0) scale(0.1);
+            opacity: 0;
+            animation: pulse-wave 12s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
+            will-change: transform, opacity;
+            transition: border 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        @keyframes pulse-wave {
+            0% { transform: translate3d(-50%, -50%, 0) scale(0.1); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translate3d(-50%, -50%, 0) scale(3.5); opacity: 0; }
+        }
+
+        /* =========================================
+           GLASSMORPHISM CONTAINER
+           ========================================= */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 850px;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3.5rem;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.6s ease;
+        }
+
+        /* =========================================
+           TYPOGRAPHY
+           ========================================= */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 2rem;
+            transition: border 0.6s ease;
+        }
+
+        h1, h2, .gradient-text {
+            background: var(--heading-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none; /* Let the gradient shine */
+            filter: drop-shadow(var(--text-shadow)); /* Apply glow via filter for clipped text */
+        }
+
+        h1 { font-size: 4rem; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 0.5rem; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; letter-spacing: 0.5px; }
+        
+        p, li { margin-bottom: 1.2rem; font-size: 1.05rem; font-weight: 500; letter-spacing: 0.3px; }
+        
+        ul { padding-left: 1.5rem; }
+        li strong {
+            background: var(--heading-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================================
+           UI ELEMENTS
+           ========================================= */
+        button#theme-toggle {
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            color: var(--text-fill);
+            text-shadow: var(--text-shadow);
+            padding: 0.6rem 1.2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        button#theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--text-shadow);
+        }
+
+        .warning-box {
+            background: var(--warn-bg);
+            border-left: 4px solid var(--warn-border);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.6s ease;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-shadow: none;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.6s ease;
+        }
+
+        code { font-family: inherit; }
+
+        /* Buttons & Icons */
+        .download-btn {
+            display: inline-block;
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            color: var(--text-fill);
+            text-shadow: var(--text-shadow);
+            padding: 0.6rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--text-shadow);
+        }
+
+        .github-link {
+            display: inline-block;
+            margin-top: 1.2rem;
+            color: var(--text-fill);
+            filter: drop-shadow(var(--text-shadow));
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 650px) {
+            main { padding: 2rem; }
+            h1 { font-size: 3rem; }
+            header { flex-direction: column; gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background Canvas for Frost/Heat Waves -->
+<div id="wave-container"></div>
+
+<main>
+    <header>
+        <div>
+            <h1>Trafod</h1>
+            <p style="margin:0; opacity: 0.9; font-size: 1.25rem;" class="gradient-text">A local chat server system.</p>
+        </div>
+        <button id="theme-toggle">Change Mode</button>
+    </header>
+
+    <section>
+        <h2>The Vision</h2>
+        <p>Needed a way to message people fast and log the data quickly. Made it simple to use and made it so that people can host multiple servers on the same WIFI. Prevent malicious activities by setting soft and hard caps for servers (server shuts with saved text file when soft cap is reached). For a large-scale network, the dream is to see many servers hosted on a network which people can join and make friends with those on the server. The client is under 500kb and the server is under 10mb compressed (~25mb uncompressed) so just download it and see if it is useful for you. Works on Windows devices.</p>
+
+        <a href="https://github.com/rayofgoldenlight/tools/tree/main/projects/trafod/exec" class="download-btn" target="_blank" rel="noopener noreferrer">Download Chat Client/Server Creator</a>
+    </section>
+
+    <section>
+        <h2>How to Use</h2>
+        <ul>
+            <li><strong>Host:</strong> Launch <code>LocalChatHost.exe</code>. Set your desired byte cap, TCP port, and an optional 4-digit PIN. Click start.</li>
+            <li><strong>Client:</strong> Launch <code>LocalChat.exe</code>. Enter the server's UDP Port (typically TCP Port + 1) and click "Scan" to discover active servers. Select a server and connect.</li>
+        </ul>
+
+        <div class="warning-box">
+            <span class="gradient-text">⚠️ Important Data Warning:</span><br>
+            Chat traffic is stored as a raw text file directly on your device. To prevent accidental data loss, it is highly recommended to keep <code>LocalChatHost.exe</code> in its own dedicated folder. Running it in a cluttered directory may cause it to overwrite existing text files.
+        </div>
+    </section>
+
+    <section>
+        <h2>Compilation Guide (MSYS2 MinGW-w64)</h2>
+        <p>If you prefer to compile from source rather than running the pre-built executables, open your MSYS2 MinGW-w64 terminal and run the following commands.</p>
+        
+        <p><em>Note: If Go is installed on Windows but your MSYS2 terminal says "command not found", you can link it by running this first (adjusting the path if your Go installation is elsewhere):</em></p>
+        <pre><code>export PATH=$PATH:/c/Program\ Files/Go/bin</code></pre>
+
+        <pre><code>[1/4] Compiling Client Icons
+windres client.rc -O coff -o client_res.o
+
+[2/4] Compiling C Client (LocalChat.exe)
+gcc client_discover.c client_res.o -O2 -o LocalChat.exe -lws2_32 -lgdi32 -luser32 -ladvapi32 -mwindows
+
+[3/4] Compiling Server Icons
+cd cmd/host
+windres host.rc -O coff -o host.syso
+cd ../..
+
+[4/4] Compiling Go Server (LocalChatHost.exe)
+go mod tidy
+go build -ldflags="-s -w -H=windowsgui" -o LocalChatHost.exe ./cmd/host/</code></pre>
+    </section>
+
+    <footer style="text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); font-size: 0.95rem; opacity: 0.9; display: flex; flex-direction: column; align-items: center;">
+        <span>Made by <strong class="gradient-text">rayofgoldenlight</strong></span>
+        <a href="https://github.com/rayofgoldenlight/tools/tree/main/projects/trafod" class="github-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
+            <svg height="32" viewBox="0 0 16 16" width="32" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+        </a>
+    </footer>
+</main>
+
+<script>
+    // --- Theme Toggle Logic ---
+    const htmlEl = document.documentElement;
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    const savedTheme = localStorage.getItem('trafod-theme') || 'dark';
+    htmlEl.setAttribute('data-theme', savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = htmlEl.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        htmlEl.setAttribute('data-theme', newTheme);
+        localStorage.setItem('trafod-theme', newTheme);
+    });
+
+    // --- High-Performance Wave Generator ---
+    const canvas = document.getElementById('wave-container');
+    
+    function createWave() {
+        const wave = document.createElement('div');
+        wave.className = 'wave';
+        
+        // Randomize Origin (Left edge or Right edge)
+        const isLeft = Math.random() > 0.5;
+        wave.style.left = isLeft ? '0%' : '100%';
+        
+        // Randomize Vertical Position
+        wave.style.top = (Math.random() * 100) + '%';
+        
+        // Size is consistent but scale transform makes it grow
+        wave.style.width = '600px';
+        wave.style.height = '600px';
+        
+        canvas.appendChild(wave);
+        
+        // Clean up DOM after animation completes (12 seconds)
+        setTimeout(() => {
+            if(canvas.contains(wave)) {
+                canvas.removeChild(wave);
+            }
+        }, 12000);
+    }
+
+    // Spawn a new wave every 2.5 seconds
+    setInterval(createWave, 2500);
+    
+    // Initial staggered spawn
+    setTimeout(createWave, 100);
+    setTimeout(createWave, 1500);
+</script>
+
+</body>
+</html>
