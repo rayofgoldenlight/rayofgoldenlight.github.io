@@ -1,0 +1,34 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const clear_audio: () => void;
+export const export_binary: (a: number, b: number) => [number, number, number];
+export const get_audio_count: () => number;
+export const get_audio_data: (a: number) => any;
+export const get_audio_name: (a: number) => [number, number];
+export const get_scene_json: () => [number, number, number, number];
+export const load_binary: (a: number, b: number) => [number, number, number, number];
+export const push_audio: (a: number, b: number, c: number, d: number, e: number) => void;
+export const reset_state: () => [number, number];
+export const set_audio_name: (a: number, b: number, c: number) => void;
+export const set_bytecode: (a: number, b: number, c: number, d: any) => [number, number];
+export const set_scene: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
+export const set_selected_object: (a: number) => void;
+export const start: () => void;
+export const start_with: (a: number, b: number, c: number, d: number) => [number, number];
+export const start_with_async: (a: number, b: number, c: number, d: number) => any;
+export const toggle_hud: () => void;
+export const wasm_bindgen__closure__destroy__hd0b4bd68f98897ae: (a: number, b: number) => void;
+export const wasm_bindgen__closure__destroy__hc7ad0bdaca4bc092: (a: number, b: number) => void;
+export const wasm_bindgen__convert__closures_____invoke__h081d185e278400a8: (a: number, b: number, c: number) => void;
+export const wasm_bindgen__convert__closures_____invoke__h062a78fa18ff1620: (a: number, b: number, c: any, d: any) => void;
+export const wasm_bindgen__convert__closures_____invoke__h3fa52adf08d8bebc: (a: number, b: number, c: any) => void;
+export const wasm_bindgen__convert__closures_____invoke__h1a6c5a2d29470352: (a: number, b: number, c: any) => void;
+export const __wbindgen_malloc: (a: number, b: number) => number;
+export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+export const __wbindgen_exn_store: (a: number) => void;
+export const __externref_table_alloc: () => number;
+export const __wbindgen_externrefs: WebAssembly.Table;
+export const __externref_table_dealloc: (a: number) => void;
+export const __wbindgen_free: (a: number, b: number, c: number) => void;
+export const __wbindgen_start: () => void;

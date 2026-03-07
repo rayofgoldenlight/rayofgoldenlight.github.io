@@ -1,0 +1,15 @@
+{
+  "name": "runtime",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "runtime_bg.wasm",
+    "runtime.js",
+    "runtime.d.ts"
+  ],
+  "main": "runtime.js",
+  "types": "runtime.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

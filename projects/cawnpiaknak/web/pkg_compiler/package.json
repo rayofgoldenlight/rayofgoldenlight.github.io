@@ -1,0 +1,15 @@
+{
+  "name": "compiler_wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "compiler_wasm_bg.wasm",
+    "compiler_wasm.js",
+    "compiler_wasm.d.ts"
+  ],
+  "main": "compiler_wasm.js",
+  "types": "compiler_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
