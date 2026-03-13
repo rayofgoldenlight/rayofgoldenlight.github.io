@@ -88,6 +88,7 @@
         to perform real-time searches and favorite operations.
       </p>
     </section>
+
     <section class="build-section mt-5">
         <h2 class="text-primary mb-3">How to Build and Run the Project</h2>
 
@@ -96,33 +97,41 @@
           you can follow these simple steps below. Click to expand for details.
         </p>
 
+        <section class="build-section mt-5">
+        <h2 class="text-primary mb-3">How to Build and Run the Project</h2>
+
+        <p>
+          For users who’d like to explore and run the FHIR Patient Finder source code themselves,
+          you can follow these simple steps below. Click to expand for details.
+        </p>
+
         <div class="accordion" id="buildAccordion">
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingBuild">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBuild" aria-expanded="false" aria-controls="collapseBuild">
-                Show Step‑by‑Step Instructions
+                Show Step-by-Step Instructions
               </button>
             </h2>
             <div id="collapseBuild" class="accordion-collapse collapse" aria-labelledby="headingBuild" data-bs-parent="#buildAccordion">
               <div class="accordion-body">
                 <ol>
-                  <li>Make sure you have the latest version of the <a href="https://dotnet.microsoft.com/en-us/download" target="_blank">.NET SDK installed</a>.</li>
-                  <li>Clone the project from GitHub:
-                    <pre><code>git clone https://github.com/rayofgoldenlight/tree.git</code></pre>
+                  <li>Make sure you have the latest version of the <a href="https://dotnet.microsoft.com/en-us/download" target="_blank">.NET SDK installed</a>.</li>
+                  <li class="mt-2">Clone the project from GitHub:
+                    <pre class="overflow-auto bg-light p-2 border rounded mt-1 mb-0"><code>git clone https://github.com/rayofgoldenlight/tree.git</code></pre>
                   </li>
-                  <li>Navigate to the project folder:
-                    <pre><code>cd projects/fhirpatientsearch/fpf</code></pre>
+                  <li class="mt-2">Navigate to the project folder:
+                    <pre class="overflow-auto bg-light p-2 border rounded mt-1 mb-0"><code>cd projects/fhirpatientsearch/fpf</code></pre>
                   </li>
-                  <li>Build the project:
-                    <pre><code>dotnet build</code></pre>
+                  <li class="mt-2">Build the project:
+                    <pre class="overflow-auto bg-light p-2 border rounded mt-1 mb-0"><code>dotnet build</code></pre>
                   </li>
-                  <li>Run the application:
-                    <pre><code>dotnet run</code></pre>
+                  <li class="mt-2">Run the application:
+                    <pre class="overflow-auto bg-light p-2 border rounded mt-1 mb-0"><code>dotnet run</code></pre>
                   </li>
-                  <li>Open your browser and visit the shown local URL (usually <code>https://localhost:5001</code>) to access the API or web UI.</li>
+                  <li class="mt-2">Open your browser and visit the shown local URL (usually <code>https://localhost:5001</code>) to access the API or web UI.</li>
                 </ol>
-                <p class="small text-muted mb-0">
-                  💡 You may need to ensure your local database connection is configured correctly. This project uses <a href="https://aka.ms/sqllocaldb" target="_blank">SQL LocalDB</a>.
+                <p class="small text-muted mb-0 mt-3">
+                  💡 You may need to ensure your local database connection is configured correctly. This project uses <a href="https://aka.ms/sqllocaldb" target="_blank">SQL LocalDB</a>.
                 </p>
               </div>
             </div>
