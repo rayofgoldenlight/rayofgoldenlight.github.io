@@ -26,6 +26,24 @@
     canvas { border: 1px solid #2a2f45; background: #111; }
     .hint { font-size: 12px; color: #9aa4c7; }
 
+    /* ── Fullscreen Canvas Scaling ── */
+    canvas:fullscreen {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      background: #000;
+      border: none;
+      zoom: 1; /* Negates the 0.89 body zoom for fullscreen */
+    }
+    canvas:-webkit-full-screen { /* Safari support */
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      background: #000;
+      border: none;
+      zoom: 1;
+    }
+
     /* ── Modal ───────────────────────────── */
     .modal-overlay {
       position: fixed; inset: 0;
@@ -218,6 +236,36 @@
     #af-save:hover { background: #00ff88; }
     #af-cancel { background: none; border: 1px solid #2a2f45; color: #9aa4c7; }
     #af-cancel:hover { color: #eaeaea; border-color: #3a4065; }
+
+    .gold-link-btn {
+      color: #f7d06b; 
+      border: 1px solid #f7d06b; 
+      padding: 2px 8px; 
+      border-radius: 4px; 
+      text-decoration: none; 
+      font-size: 12px; 
+      font-weight: bold;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+    .gold-link-btn:hover {
+      background: rgba(247, 208, 107, 0.15);
+    }
+
+    .soft-blue-link-btn {
+      color: #9aa4c7;
+      border: 1px solid #9aa4c7; 
+      padding: 2px 8px; 
+      border-radius: 4px; 
+      text-decoration: none; 
+      font-size: 12px; 
+      font-weight: bold;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+    .soft-blue-link-btn:hover {
+      background: rgba(130, 170, 255, 0.15);
+    }
 
     /* ── Draw Modal ───────────────────────── */
     .draw-modal { background: #161b2e; border: 1px solid #2a2f45; border-radius: 8px; width: 500px; display: flex; flex-direction: column; }
@@ -503,13 +551,16 @@
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <strong>Preview</strong>
-          <a href="help.html" target="_blank" style="color: #f7d06b; border: 1px solid #f7d06b; padding: 2px 8px; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: bold;">Help / Docs</a>
+          <a href="help.html" target="_blank" class="gold-link-btn">Help / Docs</a>
         </div>
-        <button id="modeToggleBtn" style="background: #1e2440; border: 1px solid #2a2f45; color: #eaeaea; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-weight: bold;">Mode: Edit</button>
+        <div style="display: flex; gap: 8px;">
+          <button id="fullscreenBtn" style="background: #1e2440; border: 1px solid #2a2f45; color: #eaeaea; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-weight: bold;">Fullscreen</button>
+          <button id="modeToggleBtn" style="background: #1e2440; border: 1px solid #2a2f45; color: #eaeaea; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-weight: bold;">Mode: Edit</button>
+        </div>
       </div>
       <canvas id="preview-canvas" width="800" height="600"></canvas>
       <div class="hint">Arrow keys should move the player if base.bin contains movement bytecode.</div>
-      <div class="hint">Download, import, and play the demo! It's called demogame.bin and it's here: <a href="https://github.com/rayofgoldenlight/tools/tree/main/projects/cawnpiaknak" target="_blank">GitHub Repository</a></div>
+      <div class="hint">Download, import, and play the demo! It's called demogame.bin and it's here: <a href="https://github.com/rayofgoldenlight/tools/tree/main/projects/cawnpiaknak" target="_blank" class="soft-blue-link-btn" style="margin-left: 4px;">GitHub Repository</a></div>
       <div class="hint">Also, before you play, make sure you click the "Mode: Edit" button so you get on "Mode: Play" mode so that object dragging gets disabled.</div>
     </div>
   </div>

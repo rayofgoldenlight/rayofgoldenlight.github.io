@@ -1488,8 +1488,23 @@ async function main() {
 
   const previewCanvas = document.getElementById("preview-canvas");
   const modeToggleBtn = document.getElementById("modeToggleBtn");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
   let dragState = null; // { objectIndex, startX, startY, origX, origY }
   let editorMode = "edit";
+
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      if (previewCanvas.requestFullscreen) {
+        previewCanvas.requestFullscreen();
+      } else if (previewCanvas.webkitRequestFullscreen) { /* Safari */
+        previewCanvas.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  });
 
   modeToggleBtn.onclick = () => {
     if (editorMode === "edit") {
