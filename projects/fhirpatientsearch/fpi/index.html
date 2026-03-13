@@ -42,50 +42,50 @@
 
     <!-- Project Info -->
     <section class="info">
-      <h2 class="text-primary mb-3">What This Project Does</h2>
+      <h2 class="text-primary mb-3">What This Project Does</h2>
       <p>
-        The <strong>FHIR Patient Finder</strong> is a .NET 6+ web application created to search, favorite,
-        and manage patient data following the <a href="https://www.hl7.org/fhir/" target="_blank">FHIR (Fast Healthcare Interoperability Resources)</a> standards.
+        The <strong>FHIR Patient Finder</strong> is a .NET 6+ web application created to search, favorite,
+        and manage patient data following the <a href="https://www.hl7.org/fhir/" target="_blank">FHIR (Fast Healthcare Interoperability Resources)</a> standards.
         It communicates with FHIR-compatible servers to perform patient lookups by name, and provides 
         endpoints to manage favorite patients and audit interactions.
       </p>
 
-      <h4 class="text-primary mt-4">Core Technologies Used</h4>
+      <h4 class="text-primary mt-4">Core Technologies Used</h4>
       <ul>
-        <li>ASP.NET Core Minimal API</li>
-        <li>Entity Framework Core (SQL Server LocalDB)</li>
-        <li>Custom FHIR client service</li>
-        <li>Modern HTML/CSS/Bootstrap frontend</li>
+        <li>ASP.NET Core Minimal API</li>
+        <li>Entity Framework Core (SQL Server LocalDB)</li>
+        <li>Custom FHIR client service</li>
+        <li>Modern HTML/CSS/Bootstrap frontend</li>
       </ul>
 
-      <h4 class="text-primary mt-4">Database Used</h4>
+      <h4 class="text-primary mt-4">Database Used</h4>
       <p>
-        The backend uses an older local version of Microsoft SQL Server (LocalDB).
-        You can find info or install it from the official Microsoft link:
+        The backend uses an older local version of Microsoft SQL Server (LocalDB).
+        You can find info or install it from the official Microsoft link:
         <a href="https://aka.ms/sqllocaldb" target="_blank">https://aka.ms/sqllocaldb</a>.
       </p>
 
-      <h4 class="text-primary mt-4">Key Features</h4>
+      <h4 class="text-primary mt-4">Key Features</h4>
       <ul>
-        <li>Search patients by name (via FHIR API)</li>
-        <li>Add and remove patient favorites</li>
-        <li>Track actions in an audit log</li>
-        <li>Simple RESTful API structure for easy integration</li>
+        <li>Search patients by name (via FHIR API)</li>
+        <li>Add and remove patient favorites</li>
+        <li>Track actions in an audit log</li>
+        <li>Simple RESTful API structure for easy integration</li>
       </ul>
 
-      <h4 class="text-primary mt-4">Implementation Highlights</h4>
+      <h4 class="text-primary mt-4">Implementation Highlights</h4>
       <p>
-        The project uses dependency injection for all core services:
+        The project uses dependency injection for all core services:
         <ul>
-          <li><code>IFhirPatientService</code> – handles FHIR API requests</li>
-          <li><code>IPatientRepository</code> – handles database and favorite management</li>
-          <li><code>AppDbContext</code> – Entity Framework context for audit logging and patient records</li>
+          <li><code>IFhirPatientService</code> – handles FHIR API requests</li>
+          <li><code>IPatientRepository</code> – handles database and favorite management</li>
+          <li><code>AppDbContext</code> – Entity Framework context for audit logging and patient records</li>
         </ul>
       </p>
 
       <p>
-        Each endpoint is built as a minimal API route, for simplicity and clarity. The frontend (in a separate project) uses these endpoints 
-        to perform real-time searches and favorite operations.
+        Each endpoint is built as a minimal API route, for simplicity and clarity. The frontend (in a separate project) uses these endpoints 
+        to perform real-time searches and favorite operations.
       </p>
     </section>
     <section class="build-section mt-5">
