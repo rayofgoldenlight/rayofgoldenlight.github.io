@@ -55,7 +55,7 @@ header {
 
 /* Accordion styling */
 .accordion-button:not(.collapsed) {
-  color: #fff;
+  color: white !important;
   background: linear-gradient(90deg, #0074e4, #48a6ff);
 }
 
