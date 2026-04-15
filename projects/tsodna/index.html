@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Project: Tsodna</title>
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/WpBMQmVy/gl-ll.png">
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --muted: #888;
+            --border: #1f1f1f;
+            --accent: #ff8c00;
+            --danger: #ff3b30;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background 0.2s ease;
+        }
+
+        /* Header */
+        h1 {
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            color: var(--fg);
+        }
+
+        /* Drop zone */
+        #drop-zone {
+            border: 1px solid var(--border);
+            padding: 48px;
+            text-align: center;
+            color: var(--muted);
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        #drop-zone:hover, #drop-zone.dragover {
+            border-color: var(--accent);
+            color: var(--fg);
+        }
+
+        #drop-zone.dragover {
+            box-shadow: 0 0 12px rgba(255,140,0,0.25);
+        }
+
+        /* Loading */
+        #loading {
+            display: none;
+            margin: 16px 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* Results */
+        #results-panel {
+            display: none;
+            margin-top: 20px;
+        }
+
+        /* Sections */
+        .section {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        /* Pre blocks */
+        pre {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            overflow-x: auto;
+            color: var(--fg);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Buttons */
+        button {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 6px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .title-glow {
+            color: var(--accent);
+            text-shadow: 0 0 12px var(--accent);
+        }
+
+        #disasm-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: transparent;
+            transition: 0.15s;
+        }
+
+        #disasm-indicator.active {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            border-color: var(--accent);
+        }
+
+        #disasmInputContainer {
+            display: block;
+            align-items: center;
+        }
+
+        #disasmInput {
+            transform: translateY(-2px);
+        }
+
+        .label {
+            font-size: 9px;
+            color: var(--muted);
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        body.dragging {
+            background: radial-gradient(circle at center, #111, #000);
+        }
+
+        .muted {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .tag {
+            margin-left: 8px;
+            padding: 2px 6px;
+            font-size: 11px;
+            border: 1px solid #333;
+        }
+
+        .tag.dotnet {
+            color: #ff8c00;
+            border-color: #ff8c00;
+        }
+
+        .tag.native {
+            color: #fff;
+            border-color: #444;
+        }
+
+        .cap-title {
+            color: #ff8c00;
+            font-weight: bold;
+        }
+
+        .disasm {
+            color: #00ff41;
+            background: #050505;
+            border: 1px solid #222;
+            padding: 10px;
+        }
+
+        .risk {
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+            margin: 16px 0;
+            font-weight: bold;
+        }
+
+        .risk-label {
+            margin: 0 6px;
+        }
+
+        .risk.low .risk-label {
+            color: #00ff41;
+        }
+
+        .risk.mid .risk-label {
+            color: #ff8c00;
+        }
+
+        .risk.high .risk-label {
+            color: #ff3b30;
+        }
+        .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: orange;
+        cursor: pointer;
+        }
+
+        .dot.active {
+        background: #ff5500;
+        box-shadow: 0 0 6px orange;
+        }
+
+        .disasm-control {
+        position: relative;
+        display: inline-block;
+        }
+
+        #disasmInputContainer {
+        margin-top: 6px;
+        }
+
+        #disasmInput {
+            width: 100px;
+            padding: 6px 6px;
+            background: #050505;
+            color: var(--fg);
+            border: 1px solid var(--border);
+            outline: none;
+            font-size: 11px;
+            font-family: inherit;
+            transition: 0.15s;
+        }
+
+        /* focus = orange glow */
+        #disasmInput:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 6px rgba(255,140,0,0.4);
+        }
+
+        /* subtle hover */
+        #disasmInput:hover {
+            border-color: #333;
+        }
+
+        /* Chrome, Safari, Edge */
+        #disasmInput::-webkit-outer-spin-button,
+        #disasmInput::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        #disasmInput {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        #top-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            z-index: 20;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1 id="title">EXE SECURITY ANALYZER [No limits, file processing runs on your device, made to understand if something is safe to run]</h1>
+<div id="top-controls">
+    <div id="disasmInputContainer">
+        <div class="label"></div>
+        <input 
+            id="disasmInput"
+            type="number"
+            min="1"
+            value=""
+        />
+    </div>
+
+    <div id="disasm-indicator"></div>
+</div>
+
+<div id="drop-zone">
+    DROP .EXE OR CLICK TO IMPORT
+    <div class="hint">Press [D] to toggle disassembly view + full scan</div>
+    <input type="file" id="file-input" accept=".exe" hidden />
+</div>
+
+<div id="loading">ANALYZING LOCAL BYTESTREAM...</div>
+
+<div id="results-panel">
+    <div id="report-content"></div>
+    <button id="reset-btn">ANALYZE ANOTHER FILE</button>
+</div>
+
+<script type="module">
+    const worker = new Worker('worker.js', { type: 'module' });
+    let workerReady = false;
+    let enableDisasm = false;
+
+    /* Initialize Worker */
+    worker.onmessage = (e) => {
+        if (e.data.type === 'READY') {
+            console.log("WASM Ready");
+            workerReady = true;
+        }
+        if (e.data.type === 'REPORT') renderReport(e.data.report);
+        if (e.data.type === 'ERROR') {
+            alert(e.data.message);
+            resetUI();
+        }
+    };
+
+    function escapeHtml(s) {
+        if (!s) return "";
+        return s.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const indicator = document.getElementById("disasm-indicator");
+    const title = document.getElementById("title");
+
+    /* UI Logic */
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = e => { if (e.target.files.length) handleFile(e.target.files[0]); };
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key.toLowerCase() === "d") {
+            enableDisasm = !enableDisasm;
+            indicator.classList.toggle("active", enableDisasm);
+        }
+    });
+
+    /* Drag and Drop Handlers */
+    function setGlobalDragState(state) {
+        title.classList.toggle("title-glow", state);
+        document.body.classList.toggle("dragging", state);
+        if (state) dropZone.classList.add("dragover");
+        else dropZone.classList.remove("dragover");
+    }
+
+    document.addEventListener("dragenter", (e) => {
+        if (e.dataTransfer?.files) setGlobalDragState(true);
+    });
+
+    document.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        setGlobalDragState(true);
+    });
+
+    document.addEventListener("dragleave", (e) => {
+        if (!e.relatedTarget) setGlobalDragState(false);
+    });
+
+    document.addEventListener("drop", (e) => {
+        e.preventDefault();
+        setGlobalDragState(false);
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    /* Analysis Core */
+    async function handleFile(file) {
+        if (!file.name.toLowerCase().endsWith(".exe")) return;
+        if (!workerReady) return alert("Engine initializing...");
+
+        dropZone.style.display = "none";
+        document.getElementById("loading").style.display = "block";
+
+        const bytes = new Uint8Array(await file.arrayBuffer());
+
+        const { enabled, count } = getDisasmSettings();
+
+        worker.postMessage({
+            type: "ANALYZE",
+            fileName: file.name,
+            byteData: bytes,
+            enableDisassembly: enabled,
+            instructionCount: count
+        });
+    }
+
+    function renderReport(report) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("results-panel").style.display = "block";
+        const { count } = getDisasmSettings();  
+
+        const riskClass =
+            report.riskScore >= 70 ? "high" :
+            report.riskScore >= 30 ? "mid" : "";
+
+        const caps = (report.capabilities || []).map(cap => {
+        const severity = (cap.capSeverity || "").toLowerCase();
+
+        const badgeColor =
+            severity === "high" ? "#ff3b30" :
+            severity === "medium" ? "#ff8c00" :
+            "#888";
+
+        const evidence = (cap.capEvidence || [])
+            .map(escapeHtml)
+            .join("\n");
+
+    return `
+<div class="section" style="border:1px solid #222; padding:10px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+        <strong style="color:#ff8c00;">> ${escapeHtml(cap.capName)}</strong>
+
+        <span style="
+            background:${badgeColor};
+            color:#000;
+            padding:2px 6px;
+            font-size:11px;
+            font-weight:bold;
+            border-radius:3px;
+        ">
+            ${escapeHtml(cap.capSeverity)}
+        </span>
+    </div>
+
+    <pre style="margin-top:8px;color:#aaa;">${evidence}</pre>
+</div>
+`;
+}).join("");
+
+        const exported = (report.exportedFunctions || []).length
+            ? `<div class="section">
+                EXPORTED_FUNCTIONS:
+                <pre>${report.exportedFunctions.map(escapeHtml).join("\n")}</pre>
+            </div>`
+            : "";
+
+        const disasmHtml = (report.disassembly && report.disassembly.length && enableDisasm)
+            ? `<div class="section">
+                DISASSEMBLY_DUMP (Initial ${count}):
+                <pre class="disasm">${report.disassembly.map(escapeHtml).join("\n")}</pre>
+            </div>`
+            : "";
+
+        document.getElementById("report-content").innerHTML = `
+            <div class="section">
+                FILE: ${escapeHtml(report.fileName)}
+                <span class="muted">(${(report.fileSize / 1024).toFixed(2)} KB)</span>
+            </div>
+
+            <div class="section">
+                ARCH: ${escapeHtml(report.architecture)}
+                ${report.isDotNet
+                    ? `<span class="tag dotnet">.NET ${escapeHtml(report.dotNetVersion || "")}</span>`
+                    : `<span class="tag native">Native PE</span>`
+                }
+            </div>
+
+            <div class="section">
+                SUBSYSTEM: ${escapeHtml(report.subsystem)}
+            </div>
+
+            <div class="section">
+                ENTRY: <code>0x${report.entryPoint.toString(16).toUpperCase()}</code>
+            </div>
+
+            <div class="section">
+                SHA256:
+                <code style="background:#111;padding:2px 6px;user-select:all;">
+                    ${escapeHtml(report.sha256)}
+                </code>
+            </div>
+
+            <div class="section">
+                <strong>Signed:</strong>
+                <span style="color:${report.isSigned ? '#00ff41' : '#ff3b30'};">
+                    ${report.isSigned ? "Yes (Has Certificate)" : "No (Unsigned)"}
+                </span>
+            </div>
+
+            ${report.signatureInfo && report.signatureInfo.length > 0 ? `
+            <div class="section">
+                SIGNATURE_DETAILS:
+                <ul style="margin:0;padding-left:18px;color:#aaa;font-size:12px;">
+                    ${report.signatureInfo.map(info => `<li>${escapeHtml(info)}</li>`).join("")}
+                </ul>
+            </div>
+            ` : ""}
+
+            ${report.pdbPath ? `
+            <div class="section">
+                PDB_PATH:
+                <code style="background:#111;padding:2px 6px;">
+                    ${escapeHtml(report.pdbPath)}
+                </code>
+            </div>
+            ` : ""}
+
+            <div class="risk ${riskClass}">
+                VERDICT:
+                <span class="risk-label ${riskClass}">
+                    [${report.riskScore >= 70 ? "HIGH" : report.riskScore >= 30 ? "MEDIUM" : "LOW"}]
+                </span>
+                ${escapeHtml(report.verdict)} | SCORE: ${report.riskScore}/100
+            </div>
+
+            ${caps}
+
+            <div class="section">
+                SUSPICIOUS_IMPORTS:
+                <pre>${(report.suspiciousImports || []).map(escapeHtml).join("\n") || "NONE"}</pre>
+            </div>
+
+            <div class="section">
+                RAW_STRINGS:
+                <pre>${(report.suspiciousStrings || []).map(escapeHtml).join("\n") || "NONE"}</pre>
+            </div>
+
+            ${exported}
+            ${disasmHtml}
+        `;
+
+        document.getElementById("reset-btn").onclick = resetUI;
+    }
+
+    const inputContainer = document.getElementById("disasmInputContainer");
+    const input = document.getElementById("disasmInput");
+
+    function getDisasmSettings() {
+        const enabled = enableDisasm ? 1 : 0;
+
+        let count = parseInt(input.value, 10);
+
+        if (isNaN(count) || count <= 0) {
+            count = 5000;
+        }
+
+        return { enabled, count };
+    }
+
+    function resetUI() {
+        document.getElementById("results-panel").style.display = "none";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("drop-zone").style.display = "block";
+        fileInput.value = "";
+    }
+</script>
+</body>
+</html>
