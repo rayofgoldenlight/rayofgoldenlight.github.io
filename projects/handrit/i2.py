@@ -259,4 +259,12 @@ def main():
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Index source files")
+    parser.add_argument("--source", default="files", help="Directory to scan")
+    parser.add_argument("--output", default="index.json", help="Output gzipped JSON file")
+    args = parser.parse_args()
+
+    FILES_DIR = Path(args.source)
+    OUTPUT    = Path(args.output)
     main()
