@@ -1,30 +1,42 @@
 name: Handrit Idxg
 
 on:
-  workflow_dispatch:   # allows manual runs
-  push:
-    paths:
-      - 'projects/handrit/files/**'   # triggers on push only if files in this folder changed
+  workflow_dispatch:
+  repository_dispatch:
+    types: [handrit-update]
 
 jobs:
   build-index:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - name: Checkout repo
+      - name: Checkout pages repo
         uses: actions/checkout@v4
+        with:
+          path: pages
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v4
+        with:
+          repository: rayofgoldenlight/tools
+          path: tools
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Run i2
-        working-directory: projects/handrit
-        run: python i2.py
+      - name: Run i2.py
+        working-directory: pages
+        run: |
+          python projects/handrit/i2.py \
+            --source ../tools/projects/handrit/files \
+            --output projects/handrit/index.json
 
-      - name: Commit and push if changed
+      - name: Commit and push
+        working-directory: pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
