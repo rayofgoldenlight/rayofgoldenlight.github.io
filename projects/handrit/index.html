@@ -255,6 +255,74 @@ tr.fh td{
 /* highlight */
 mark{background:none;color:var(--y2);font-weight:700}
 
+/* Footer */
+footer{
+  text-align:center;
+  padding:16px;
+  border-top:1px solid var(--bdr);
+  margin-top:24px;
+  color:var(--tx3);
+  font-size:11px;
+}
+footer a {
+    color: var(--tx3);
+    text-decoration: none;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.15s;
+    letter-spacing: 0.03em;
+    font-size: 11px;
+}
+footer a:hover {
+    color: var(--p2);
+}
+footer a svg {
+    fill: var(--p2);
+    transition: filter 0.2s ease, fill 0.2s;
+    filter:
+      drop-shadow(0 0 6px rgba(139,92,246,.35));
+    opacity: .96;
+
+}
+
+footer a:hover svg {
+  filter:
+    drop-shadow(-1px 0 #ff0040)
+    drop-shadow(1px 0 #00e5ff)
+    drop-shadow(0 0 6px #8b5cf6);
+  position: relative;
+}
+
+.gh {
+  width: 40px;
+  height: 40px;
+  overflow: visible;
+}
+.gh-wrap {
+  transform-origin: center;
+}
+
+.gh-path {
+  transition:
+    filter 120ms ease,
+    opacity 120ms ease;
+}
+
+footer a:hover .gh-path {
+  filter: url(#gh-glitch);
+}
+
+@keyframes gh-glitch {
+  0%   { transform: translate(0,0); }
+  20%  { transform: translate(-1px,0); }
+  40%  { transform: translate(1px,0); }
+  60%  { transform: translate(-1px,1px); }
+  80%  { transform: translate(1px,-1px); }
+  100% { transform: translate(0,0); }
+}
+
 /* scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
@@ -289,7 +357,125 @@ mark{background:none;color:var(--y2);font-weight:700}
   <div id="status">loading index.json.gz…</div>
 </div>
 
+<footer>
+  <a href="https://github.com/rayofgoldenlight/rayofgoldenlight.github.io/tree/main/projects/handrit" target="_blank">
+    <span>Made by <b>rayofgoldenlight</b></span>
+    <svg class="gh" viewBox="0 0 16 16" aria-hidden="true">
+      <defs>
+        <filter id="gh-glitch"
+                x="-20"
+                y="-20"
+                width="80"
+                height="80">
+          <!-- RED -->
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values="
+              1 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 1 0"
+            result="red" />
+          <!-- CYAN -->
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values="
+              0 0 0 0 0
+              0 1 0 0 0
+              0 0 1 0 0
+              0 0 0 1 0"
+            result="cyan" />
+          <!-- offsets -->
+          <feOffset in="red" dx="0" dy="0" result="redShift">
+            <animate attributeName="dx"
+                    values="0; -2; 2; 0; -1.5; 0"
+                    dur="0.25s"
+                    repeatCount="1"
+                    begin="indefinite"
+                    calcMode="discrete"
+                    id="a-red"/>
+          </feOffset>
+          <feOffset in="cyan" dx="0" dy="0" result="cyanShift">
+            <animate attributeName="dx"
+                    values="0; 2; -1; 0; 1.2; 0"
+                    dur="0.25s"
+                    repeatCount="1"
+                    begin="indefinite"
+                    calcMode="discrete"
+                    id="a-cyan"/>
+          </feOffset>
+          <!-- displacement -->
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="0"
+            xChannelSelector="R"
+            yChannelSelector="G">
+            <animate attributeName="scale"
+                    values="0; 5; 0; 3; 0"
+                    dur="0.25s"
+                    repeatCount="1"
+                    begin="indefinite"
+                    calcMode="discrete"
+                    id="a-disp"/>
+          </feDisplacementMap>
+          <!-- noise -->
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.9"
+            numOctaves="1"
+            seed="8"
+            result="noise">
+            <animate attributeName="baseFrequency"
+                    values="0.9; 0.7; 1.2; 0.8"
+                    dur="0.25s"
+                    repeatCount="1"
+                    begin="indefinite"
+                    id="a-noise"/>
+          </feTurbulence>
+          <feComponentTransfer result="flicker">
+            <feFuncR type="linear" slope="1">
+              <animate attributeName="slope"
+                      values="1; 1.4; 0.9; 1"
+                      dur="0.25s"
+                      repeatCount="1"
+                      begin="indefinite"
+                      calcMode="discrete"
+                      id="a-slope"/>
+            </feFuncR>
+            <feFuncG type="linear" slope="1"/>
+            <feFuncB type="linear" slope="1"/>
+          </feComponentTransfer>
+          <feBlend in="redShift" in2="cyanShift" mode="screen" result="blend"/>
+          <feBlend in="blend" in2="SourceGraphic" mode="lighten"/>
+        </filter>
+      </defs>
+      <g class="gh-wrap" filter="url(#gh-glitch)">
+        <path
+          fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+        />
+      </g>
+    </svg>
+  </a>
+</footer>
+
 <script>
+(function() {
+  const ids = ['a-red','a-cyan','a-disp','a-noise','a-slope'];
+  function burst() {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.beginElement();
+    });
+    const delay = 9000 + Math.random() * 4000;
+    setTimeout(burst, delay);
+  }
+  setTimeout(burst, 500);
+})();
+
 /* state */
 let ALL=[],IDX=new Map(),VIEW='flat',SORT={col:'name',dir:1},Q='',OPEN=new Set();
 const REPO=document.querySelector('meta[name="repo"]')?.content||'';
