@@ -1,0 +1,33 @@
+name: Handrit Idxg
+
+on:
+  workflow_dispatch:   # allows manual runs
+  push:
+    paths:
+      - 'projects/handrit/files/**'   # triggers on push only if files in this folder changed
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run i2
+        working-directory: projects/handrit
+        run: python i2.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add projects/handrit/index.json.gz
+          git diff --staged --quiet || git commit -m "Handrit idx mu/ [skip ci]"
+          git push

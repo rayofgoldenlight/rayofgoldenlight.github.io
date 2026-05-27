@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Handrit</title>
+<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/WpBMQmVy/gl-ll.png">
+<meta name="repo" content="rayofgoldenlight/rayofgoldenlight.github.io">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:     #07051a;
+  --bg2:    #0d0923;
+  --surf:   #14103a;
+  --surf2:  #1c1750;
+  --bdr:    #221a4a;
+  --bdr2:   #3a2e72;
+  --p:      #8b5cf6;
+  --p2:     #a78bfa;
+  --y:      #8ab0fd;
+  --y2:     #247afb;
+  --tx:     #ddd6fe;
+  --tx2:    #8f7ec7;
+  --tx3:    #4a3d78;
+  --gr:     #cd9393;
+  --font:   'JetBrains Mono',monospace;
+}
+
+html,body{
+  min-height:100%;
+  background:var(--bg);
+  color:var(--tx);
+  font-family:var(--font);
+  font-size:13px;
+  line-height:1.6;
+}
+
+/* Header */
+#hd{
+  padding:18px 24px 14px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--bdr);
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+}
+#hd h1{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.06em;
+  color:var(--y);
+}
+#hd h1 span{color:var(--tx3);font-weight:400}
+#stats{
+  display:flex;
+  gap:18px;
+  color:var(--tx3);
+  font-size:11px;
+}
+#stats b{color:var(--tx2)}
+
+/* Search bar */
+#sb{
+  padding:8px 24px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--bdr);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+#qw{position:relative;flex:1;min-width:0}
+#qw::before{
+  content:'/';
+  position:absolute;
+  left:10px;top:50%;
+  transform:translateY(-50%);
+  color:var(--tx3);
+  pointer-events:none;
+  font-size:12px;
+}
+#q{
+  width:100%;
+  background:var(--surf);
+  border:1px solid var(--bdr2);
+  color:var(--tx);
+  font-family:var(--font);
+  font-size:13px;
+  padding:5px 10px 5px 24px;
+  outline:none;
+  border-radius:3px;
+  transition:border-color .12s;
+}
+#q:focus{border-color:var(--p)}
+#q::placeholder{color:var(--tx3)}
+#rc{
+  color:var(--tx3);
+  font-size:11px;
+  white-space:nowrap;
+  min-width:72px;
+  text-align:right;
+}
+#rc b{color:var(--y)}
+.tgl{
+  display:flex;
+  border:1px solid var(--bdr2);
+  border-radius:3px;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.tgl button{
+  background:none;
+  border:none;
+  color:var(--tx3);
+  font-family:var(--font);
+  font-size:11px;
+  padding:4px 10px;
+  cursor:pointer;
+  transition:background .1s,color .1s;
+  line-height:1;
+}
+.tgl button.on{background:var(--p);color:#fff}
+
+/* Table */
+#tw{overflow-x:auto}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+colgroup .c-name   {width:22%}
+colgroup .c-folder {width:14%}
+colgroup .c-lines  {width:7%}
+colgroup .c-size   {width:7%}
+colgroup .c-imp    {width:22%}
+colgroup .c-sum    {width:28%}
+
+thead th{
+  text-align:left;
+  padding:7px 10px 7px 24px;
+  font-size:10px;
+  font-weight:700;
+  color:var(--tx3);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--bdr);
+  white-space:nowrap;
+  cursor:pointer;
+  user-select:none;
+}
+thead th:hover{color:var(--tx2)}
+thead th.sorted{color:var(--y2)}
+
+/* file rows */
+tr.fr{
+  border-bottom:1px solid var(--bdr);
+  cursor:pointer;
+  transition:background .08s;
+}
+tr.fr:hover{background:var(--surf)}
+tr.fr.open{background:var(--surf)}
+tr.fr.open .cv{transform:rotate(90deg);color:var(--y)}
+
+td{
+  padding:5px 10px;
+  vertical-align:middle;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+td:first-child{padding-left:24px}
+
+.td-n{display:flex;align-items:center;gap:7px;min-width:0}
+.cv{
+  color:var(--tx3);
+  font-size:10px;
+  transition:transform .12s;
+  flex-shrink:0;
+}
+.fn{color:var(--y);font-weight:500}
+.fb{color:var(--p2);font-size:11px}
+.td-l,.td-s{color:var(--tx2);font-size:12px;text-align:right}
+.td-i,.td-m{color:var(--tx3);font-size:11px}
+
+/* detail rows */
+tr.dr td{
+  padding:0;
+  background:var(--bg2);
+  overflow:visible;
+  white-space:normal;
+}
+.dp{
+  padding:12px 20px 14px 40px;
+  border-bottom:1px solid var(--bdr2);
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px 20px;
+}
+.ds h4{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--tx3);
+  margin-bottom:5px;
+}
+.ds .its{display:flex;flex-wrap:wrap;gap:3px}
+.tg{
+  background:var(--surf2);
+  border:1px solid var(--bdr2);
+  color:var(--p2);
+  font-size:11px;
+  padding:1px 6px;
+  border-radius:2px;
+  font-family:var(--font);
+}
+.tg.fn2{color:var(--gr);border-color:#0e3a26;background:#071e12}
+.tg.cl {color:var(--y);border-color:#6b3700;background:#1a0d00}
+.dd{
+  grid-column:1/-1;
+  color:var(--tx2);
+  font-size:11px;
+  font-style:italic;
+  border-left:2px solid var(--bdr2);
+  padding-left:10px;
+  margin-top:2px;
+}
+.src{font-size:11px;margin-top:6px}
+.src a{color:var(--p2);text-decoration:none}
+.src a:hover{text-decoration:underline}
+
+/* folder header rows */
+tr.fh td{
+  padding:9px 24px 5px;
+  font-size:11px;
+  font-weight:700;
+  color:var(--p2);
+  letter-spacing:.04em;
+  background:var(--bg);
+  border-bottom:1px solid var(--bdr);
+}
+
+/* status */
+#status{padding:40px 24px;color:var(--tx3);font-size:12px}
+#status.err{color:#f87171}
+
+/* highlight */
+mark{background:none;color:var(--y2);font-weight:700}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--p)}
+</style>
+</head>
+<body>
+
+<div id="hd">
+  <h1>INDEX <span>of</span> /files <span>>></span> Scripts Directory</h1>
+  <div id="stats">
+    <span><b id="s-f">—</b> files</span>
+    <span><b id="s-d">—</b> folders</span>
+    <span>indexed <b id="s-t">—</b></span>
+  </div>
+</div>
+
+<div id="sb">
+  <div id="qw">
+    <input id="q" type="text" placeholder="search by name, import, function, class…"
+           autocomplete="off" spellcheck="false">
+  </div>
+  <span id="rc"></span>
+  <div class="tgl">
+    <button id="b-flat" class="on" onclick="setView('flat')">flat</button>
+    <button id="b-grp"             onclick="setView('group')">folders</button>
+  </div>
+</div>
+
+<div id="tw">
+  <div id="status">loading index.json.gz…</div>
+</div>
+
+<script>
+/* state */
+let ALL=[],IDX=new Map(),VIEW='flat',SORT={col:'name',dir:1},Q='',OPEN=new Set();
+const REPO=document.querySelector('meta[name="repo"]')?.content||'';
+
+/* boot */
+fetch('./index.json.gz')
+  .then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const ds = new DecompressionStream('gzip');
+    const stream = r.body.pipeThrough(ds);
+    return new Response(stream).text();
+  })
+  .then(txt => JSON.parse(txt))
+  .then(d=>{
+    ALL=d.files||[];
+    buildIdx();
+    document.getElementById('s-f').textContent=d.total_files??ALL.length;
+    document.getElementById('s-d').textContent=(d.folders??[]).length;
+    document.getElementById('s-t').textContent=fmtDate(d.generated);
+    render();
+  })
+  .catch(e=>{
+    const s=document.getElementById('status');
+    s.className='err';
+    s.textContent='Could not load index.json — '+e.message+'. Run generate_index.py first.';
+  });
+
+/* token index */
+function tok(s){
+  if(!s)return[];
+  return s.toLowerCase().split(/[\s.,_\-\/\\:()[\]'"]+/).filter(t=>t.length>1);
+}
+function buildIdx(){
+  IDX.clear();
+  ALL.forEach((f,i)=>{
+    const ts=new Set([
+      ...tok(f.name),...tok(f.folder),...tok(f.summary),...tok(f.docstring),
+      ...(f.imports||[]).flatMap(tok),
+      ...(f.from_imports||[]).flatMap(tok),
+      ...(f.functions||[]).map(x=>x.name).flatMap(tok),
+      ...(f.classes||[]).map(x=>x.name).flatMap(tok),
+    ]);
+    ts.forEach(t=>{
+      if(!IDX.has(t))IDX.set(t,new Set());
+      IDX.get(t).add(i);
+    });
+  });
+}
+function search(q){
+  const terms=tok(q);
+  if(!terms.length)return ALL;
+  let res=null;
+  for(const t of terms){
+    const hits=new Set();
+    for(const[k,s]of IDX)if(k.startsWith(t))s.forEach(i=>hits.add(i));
+    res=res===null?hits:new Set([...res].filter(i=>hits.has(i)));
+    if(res.size===0)break;
+  }
+  return res?[...res].map(i=>ALL[i]):[];
+}
+
+/* sort */
+function srt(files){
+  return[...files].sort((a,b)=>{
+    const k=SORT.col;
+    const av=a[k]??'',bv=b[k]??'';
+    return av<bv?-SORT.dir:av>bv?SORT.dir:0;
+  });
+}
+
+/* render */
+function render(){
+  const files=srt(search(Q));
+  document.getElementById('rc').innerHTML='<b>'+files.length+'</b> / '+ALL.length;
+  const tw=document.getElementById('tw');
+  if(!files.length){
+    tw.innerHTML='<div id="status">no results for "'+esc(Q)+'"</div>';
+    return;
+  }
+  const body=VIEW==='group'?rGroup(files):rFlat(files);
+  tw.innerHTML=`
+<table>
+<colgroup>
+  <col class="c-name"><col class="c-folder"><col class="c-lines">
+  <col class="c-size"><col class="c-imp"><col class="c-sum">
+</colgroup>
+<thead><tr>
+  ${th('name','Name')}${th('folder','Folder')}
+  ${th('lines','Lines')}${th('size','Size')}
+  <th>Imports</th><th>Summary</th>
+</tr></thead>
+<tbody>${body}</tbody>
+</table>`;
+  tw.querySelectorAll('tr.fr').forEach(tr=>
+    tr.addEventListener('click',()=>toggle(tr.dataset.p))
+  );
+}
+
+function rFlat(files){return files.map(f=>fRow(f)+dRow(f)).join('')}
+function rGroup(files){
+  const g=new Map();
+  files.forEach(f=>{const k=f.folder||'(root)';if(!g.has(k))g.set(k,[]);g.get(k).push(f)});
+  let h='';
+  for(const[folder,fl]of g){
+    h+=`<tr class="fh"><td colspan="6">▸ ${esc(folder)} (${fl.length})</td></tr>`;
+    h+=fl.map(f=>fRow(f)+dRow(f)).join('');
+  }
+  return h;
+}
+
+function fRow(f){
+  const o=OPEN.has(f.path);
+  const imps=[...new Set([...(f.imports||[]),...(f.from_imports||[])])];
+  const is=imps.slice(0,6).join(', ')+(imps.length>6?' +'+( imps.length-6):'');
+  return`<tr class="fr${o?' open':''}" data-p="${esc(f.path)}">
+<td><div class="td-n"><span class="cv">▶</span><span class="fn">${hl(f.name)}</span></div></td>
+<td><span class="fb">${esc(f.folder)}</span></td>
+<td class="td-l">${f.lines??'—'}</td>
+<td class="td-s">${fmtSz(f.size)}</td>
+<td class="td-i">${esc(is)}</td>
+<td class="td-m">${esc(f.summary)}</td>
+</tr>`;
+}
+
+function dRow(f){
+  if(!OPEN.has(f.path))
+    return`<tr class="dr" data-dp="${esc(f.path)}" style="display:none"><td colspan="6"></td></tr>`;
+  const imps=[...new Set([...(f.imports||[]),...(f.from_imports||[])])];
+  const fns=f.functions||[],cls=f.classes||[];
+  const doc=f.docstring||f.summary||'';
+  const itags=imps.map(i=>`<span class="tg">${esc(i)}</span>`).join('')||'<span style="color:var(--tx3)">—</span>';
+  const ftags=fns.map(fn=>`<span class="tg fn2" title="${esc((fn.args||[]).join(', '))}">${esc(fn.name)}()</span>`).join('')||'<span style="color:var(--tx3)">—</span>';
+  const ctags=cls.map(c=>`<span class="tg cl">${esc(c.name)}</span>`).join('')||'<span style="color:var(--tx3)">—</span>';
+  const link=REPO
+    ?`<div class="src"><a href="https://github.com/${REPO}/blob/main/projects/handrit/${esc(f.rel)}" target="_blank">view source</a></div>`
+    :'';
+  return`<tr class="dr" data-dp="${esc(f.path)}">
+<td colspan="6"><div class="dp">
+  <div class="ds"><h4>Imports</h4><div class="its">${itags}</div></div>
+  <div class="ds"><h4>Functions</h4><div class="its">${ftags}</div></div>
+  <div class="ds"><h4>Classes</h4><div class="its">${ctags}</div>${link}</div>
+  ${doc?`<div class="dd">${esc(doc)}</div>`:''}
+</div></td>
+</tr>`;
+}
+
+/* interactions */
+function toggle(p){OPEN.has(p)?OPEN.delete(p):OPEN.add(p);render()}
+function setView(v){
+  VIEW=v;
+  document.getElementById('b-flat').classList.toggle('on',v==='flat');
+  document.getElementById('b-grp').classList.toggle('on',v==='group');
+  render();
+}
+function setSort(col){
+  SORT.col===col?SORT.dir*=-1:(SORT.col=col,SORT.dir=1);
+  render();
+}
+function th(col,lbl){
+  const a=SORT.col===col,ar=a?(SORT.dir===1?' ↑':' ↓'):'';
+  return`<th class="${a?'sorted':''}" onclick="setSort('${col}')">${lbl}${ar}</th>`;
+}
+
+/* search input */
+const qEl=document.getElementById('q');
+qEl.addEventListener('input',()=>{Q=qEl.value.trim();OPEN.clear();render()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==qEl){e.preventDefault();qEl.focus()}
+  else if(e.key==='Escape'){qEl.value='';Q='';render();qEl.blur()}
+});
+
+/* helpers */
+function esc(s){
+  if(!s)return'';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function hl(text) {
+  if (!Q) return esc(text);
+  const escaped = esc(text);
+  if (!tok(Q).length) return escaped;
+  const pattern = tok(Q)
+    .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  const re = new RegExp('(&[#\\w]+;)|(' + pattern + ')', 'gi');
+  return escaped.replace(re, (match, entity, term) => {
+    if (entity) return entity;
+    return '<mark>' + term + '</mark>';     
+  });
+}
+function fmtSz(b){
+  if(b==null)return'—';
+  if(b<1024)return b+'B';
+  if(b<1048576)return(b/1024).toFixed(1)+'K';
+  return(b/1048576).toFixed(1)+'M';
+}
+function fmtDate(iso){
+  if(!iso)return'—';
+  try{
+    return new Date(iso).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }catch{return iso}
+}
+</script>
+</body>
+</html>
