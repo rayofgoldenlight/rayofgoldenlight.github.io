@@ -235,6 +235,9 @@ def main():
             else:
                 failed += 1
 
+    for entry in parsed:
+        entry["rel"] = str(Path(entry["path"]).relative_to(FILES_DIR))
+
     # Sort by folder then filename
     parsed.sort(key=lambda f: (f["folder"], f["name"]))
 

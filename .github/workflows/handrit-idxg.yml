@@ -32,7 +32,7 @@ jobs:
         working-directory: pages
         run: |
           python projects/handrit/i2.py \
-            --source ../tools/projects/handrit/files \
+            --source ../tools/projects/handrit \
             --output projects/handrit/index.json
 
       - name: Commit and push
