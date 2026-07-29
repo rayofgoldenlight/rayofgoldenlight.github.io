@@ -314,6 +314,8 @@ footer a:hover svg {
     opacity 120ms ease;
 }
 
+.hidden { display: none; }
+
 footer a:hover .gh-path {
   filter: url(#gh-glitch);
 }
@@ -337,7 +339,7 @@ footer a:hover .gh-path {
 <body>
 
 <div id="hd">
-  <h1>INDEX <span>of</span> /files <span>>></span> Scripts Directory</h1>
+  <h1>INDEX of /files <span>-</span> Scripts Directory</h1>
   <div id="stats">
     <span><b id="s-f">—</b> files</span>
     <span><b id="s-d">—</b> folders</span>
@@ -484,7 +486,7 @@ footer a:hover .gh-path {
 })();
 
 /* state */
-let ALL=[],IDX=new Map(),VIEW='flat',SORT={col:'name',dir:1},Q='',OPEN=new Set();
+let ALL=[],IDX=new Map(),VIEW='flat',SORT={col:'name',dir:1},Q='',OPEN=new Set(),OPENF=new Set();
 const REPO=document.querySelector('meta[name="repo"]')?.content||'';
 
 /* boot */
@@ -579,6 +581,19 @@ function render(){
   tw.querySelectorAll('tr.fr').forEach(tr=>
     tr.addEventListener('click',()=>toggle(tr.dataset.p))
   );
+  tw.querySelectorAll('tr.fh').forEach(tr => {
+    tr.addEventListener('click', () => {
+      const arrow = tr.querySelector('.fh-arrow');
+      const collapsed = tr.classList.toggle('collapsed');
+      if (arrow) arrow.textContent = collapsed ? '▸' : '▾';
+      collapsed ? OPENF.delete(tr.dataset.f) : OPENF.add(tr.dataset.f);
+      let next = tr.nextElementSibling;
+      while (next && !next.classList.contains('fh')) {
+        next.classList.toggle('hidden', collapsed);
+        next = next.nextElementSibling;
+      }
+    });
+  });
 }
 
 function rFlat(files){return files.map(f=>fRow(f)+dRow(f)).join('')}
@@ -587,17 +602,19 @@ function rGroup(files){
   files.forEach(f=>{const k=f.folder||'(root)';if(!g.has(k))g.set(k,[]);g.get(k).push(f)});
   let h='';
   for(const[folder,fl]of g){
-    h+=`<tr class="fh"><td colspan="6">▸ ${esc(folder)} (${fl.length})</td></tr>`;
-    h+=fl.map(f=>fRow(f)+dRow(f)).join('');
+    /* empty search */
+    const c=!Q&&!OPENF.has(folder);
+    h+=`<tr class="fh${c?' collapsed':''}" data-f="${esc(folder)}"><td colspan="6"><span class="fh-arrow">${c?'▸':'▾'}</span> ${esc(folder)} (${fl.length})</td></tr>`;
+    h+=fl.map(f=>fRow(f,c)+dRow(f,c)).join('');
   }
   return h;
 }
 
-function fRow(f){
+function fRow(f,hid){
   const o=OPEN.has(f.path);
   const imps=[...new Set([...(f.imports||[]),...(f.from_imports||[])])];
   const is=imps.slice(0,6).join(', ')+(imps.length>6?' +'+( imps.length-6):'');
-  return`<tr class="fr${o?' open':''}" data-p="${esc(f.path)}">
+  return`<tr class="fr${o?' open':''}${hid?' hidden':''}" data-p="${esc(f.path)}">
 <td><div class="td-n"><span class="cv">▶</span><span class="fn">${hl(f.name)}</span></div></td>
 <td><span class="fb">${esc(f.folder)}</span></td>
 <td class="td-l">${f.lines??'—'}</td>
@@ -607,9 +624,9 @@ function fRow(f){
 </tr>`;
 }
 
-function dRow(f){
+function dRow(f,hid){
   if(!OPEN.has(f.path))
-    return`<tr class="dr" data-dp="${esc(f.path)}" style="display:none"><td colspan="6"></td></tr>`;
+    return`<tr class="dr${hid?' hidden':''}" data-dp="${esc(f.path)}" style="display:none"><td colspan="6"></td></tr>`;
   const imps=[...new Set([...(f.imports||[]),...(f.from_imports||[])])];
   const fns=f.functions||[],cls=f.classes||[];
   const doc=f.docstring||f.summary||'';
@@ -619,7 +636,7 @@ function dRow(f){
   const link=REPO
     ?`<div class="src"><a href="https://github.com/${REPO}/blob/main/projects/handrit/${esc(f.rel)}" target="_blank">view source</a></div>`
     :'';
-  return`<tr class="dr" data-dp="${esc(f.path)}">
+  return`<tr class="dr${hid?' hidden':''}" data-dp="${esc(f.path)}">
 <td colspan="6"><div class="dp">
   <div class="ds"><h4>Imports</h4><div class="its">${itags}</div></div>
   <div class="ds"><h4>Functions</h4><div class="its">${ftags}</div></div>
@@ -648,10 +665,10 @@ function th(col,lbl){
 
 /* search input */
 const qEl=document.getElementById('q');
-qEl.addEventListener('input',()=>{Q=qEl.value.trim();OPEN.clear();render()});
+qEl.addEventListener('input',()=>{Q=qEl.value.trim();OPEN.clear();OPENF.clear();render()});
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&document.activeElement!==qEl){e.preventDefault();qEl.focus()}
-  else if(e.key==='Escape'){qEl.value='';Q='';render();qEl.blur()}
+  else if(e.key==='Escape'){qEl.value='';Q='';OPEN.clear();OPENF.clear();render();qEl.blur()}
 });
 
 /* helpers */
